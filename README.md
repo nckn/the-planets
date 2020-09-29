@@ -1,5 +1,5 @@
-# Sound objects aka. The Silent Web
-[Try it here](https://soundobjects.netlify.app/) 🕹
+# The Planets
+[Try it here](https://the-planets.netlify.app/) 🕹
 
 ## About project
 
@@ -23,7 +23,25 @@ Make spa mode (not universal)
 https://app.netlify.com/sites/soundobjects/overview
 
 ### master
-https://thesilentweb.netlify.app/
+https://the-planets.netlify.app/
 
 ### develop
-https://develop--thesilentweb.netlify.app/
+
+
+# mp3 sources
+
+<!--
+
+Jupiter
+https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3
+
+Mars
+https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3
+
+
+All above are found at 
+https://archive.org/details/Holst-ThePlanets/Marte.mp3
+
+Other
+https://www.classicalmpr.org/story/2019/02/22/daily-download-gustav-holst--the-planets-venus-the-bringer-of-peace
+https://archive.org/details/Holst-ThePlanets/Marte.mp3 -->

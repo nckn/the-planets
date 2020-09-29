@@ -6,7 +6,7 @@
     MenuSidebar(:style_name="'leftside'" :type="'info'" :options="guiControls" :closer="container")
     MenuSidebar(:style_name="'rightside'" :type="'hover'" :options="guiControls" :closer="container")
     //- QuickOptions(:type="'top-left'" :options="quickOptions")
-    .annotation(ref="annotation")
+    .annotation(ref="annotation" v-if="showAnnotation")
       p Cube
     .debug-overlay(v-if="debug")
       p.debug-text(ref="debug_text") test
@@ -140,6 +140,7 @@ export default {
   data () {
     return {
       debug: false,
+      showAnnotation: true,
       guiControls: [
         {name: 'camerapos',
           enabled: true,
@@ -415,7 +416,7 @@ export default {
       window.addEventListener('touchmove', self.eventHappens, false);
       window.addEventListener('mousemove', self.eventHappens, false);
       
-      window.addEventListener('touchstart', self.eventHappens, false);
+      // window.addEventListener('touchstart', self.eventHappens, false);
 
       window.addEventListener('touchstart', self.eventHappens, false);
       window.addEventListener('mousedown', self.eventHappens, false);
@@ -814,7 +815,7 @@ export default {
       var intersects = raycaster.intersectObjects(self.meshes);
       
       // Intersected object
-      // self.intS = self.INTERSECTED
+      self.intS = self.INTERSECTED
       // self.intersectedObject = self.INTERSECTED // Because intS follows specific hover rules
 
       // This is where an intersection is detected
@@ -829,11 +830,15 @@ export default {
           // Store the intersected id
           self.currentId = self.intS.userData.id
 
-          self.annotation.classList.add('visible')
+          if (self.showAnnotation) {
+            self.annotation.classList.add('visible')
+          }
           // console.log('self.intS: ', self.intS.userData.id)
           
           // If type of event is mousemove do not play sound. Only on mousedown
+          console.log(e.type)
           if (e.type === 'mousedown' || e.type === 'touchstart') {
+            console.log(e.type)
             if (sounds[self.currentId].isPlaying) {
               self.stopMusic(self.currentId)
             }
@@ -855,7 +860,9 @@ export default {
         self.intS = null;
         // self.intersectedObject = null;
 
-        self.annotation.classList.remove('visible')
+        if (self.showAnnotation) {
+          self.annotation.classList.remove('visible')
+        }
         
         // Change cursor
         document.body.style.cursor = 'default'
@@ -1122,7 +1129,7 @@ export default {
       // self.updateAnnotationOpacity();
       // console.log('draw tooltip', self.intersectedObject)
 
-      if (self.intersectedObject) {
+      if (self.intersectedObject && self.showAnnotation) {
         self.updateScreenPosition();
       }
     },
