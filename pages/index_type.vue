@@ -75,10 +75,10 @@ const TEXTURE_PATH = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/123879/';
 const camOffsetY = 1500
 
 // const panoImage = require('@/assets/images/pano.jpg')
-var envTextures = [
-  require('static/textures/environment-textures-opposite-sunrise.jpg'),
-  require('static/textures/environment-textures-condensed-bands-1.jpg'),
-]
+// var envTextures = [
+//   require('static/textures/environment-textures-opposite-sunrise.jpg'),
+//   require('static/textures/environment-textures-condensed-bands-1.jpg'),
+// ]
 // const panoImage = require('@/assets/images/environment-textures-opposite-sunrise.jpg')
 
 var text = 'WRITE',
@@ -576,10 +576,10 @@ export default {
     },
     createReflectionDome() {
       var self = this
-      var panoTexture = new THREE.TextureLoader().load( envTextures[1] );
+      // var panoTexture = new THREE.TextureLoader().load( envTextures[1] );
       // self.domeMat = new THREE.MeshBasicMaterial( { map: panoTexture } )
       self.domeMat = new THREE.MeshBasicMaterial({
-        map: panoTexture
+        // map: panoTexture
         // color: 0x000000
       })
       self.domeMat.side = THREE.DoubleSide
