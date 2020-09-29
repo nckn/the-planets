@@ -70,7 +70,8 @@ import globalFunctions from '@/mixins/globalFunctions.js'
 // import GazeEvent from 'gaze-event'
 
 // const path = 'audio/fxs/'
-const path = 'snd/';
+// const path = 'snd/';
+const path = '';
 
 // const sounds = [
 //   'thud-mouth.mp3'
@@ -79,20 +80,15 @@ const path = 'snd/';
 const roomTone = '';
 
 const sounds = [
-  {obj: null, isPlaying: false, audio: null, name: 'roomtone', filename: 'backtrack_roomtone_01.mp3', type: 'sun'},
-  {obj: null, isPlaying: false, audio: null, name: 'bass', filename: 'sinelike-bass-tone-c.mp3', type: 'cube'},
-  {obj: null, isPlaying: false, audio: null, name: 'deepblow', filename: 'deep-blow.mp3', type: 'pyramid'},
-  {obj: null, isPlaying: false, audio: null, name: 'strings', filename: 'strings-silent-web-dummy-1.0.mp3', type: 'sphere'},
-  {obj: null, isPlaying: false, audio: null, name: 'pad-slow-motion-tone-f#5-d6', filename: 'pad-slow-motion-tone-fis5-d6.mp3', type: 'sphere'},
-  {obj: null, isPlaying: false, audio: null, name: 'pad-slow-motion-tone-d4', filename: 'pad-slow-motion-tone-d4.mp3', type: 'sphere'},
-  {obj: null, isPlaying: false, audio: null, name: 'heartbeat', filename: 'heartbeat.mp3', type: 'cube'},
-  {obj: null, isPlaying: false, audio: null, name: 'double-bass', filename: 'double-bass-e0.mp3', type: 'cube'},
-  {obj: null, isPlaying: false, audio: null, name: 'sitar', filename: 'sitar1-motif-1.mp3', type: 'pyramid'},
-  // {obj: null, isPlaying: false, audio: null, name: 'drum', filename: 'drum-silent-web-dummy-1.0.mp3', type: 'pyramid'},
-  // {obj: null, isPlaying: false, audio: null, name: 'frogs', filename: 'Africa-2-frogs-and-party.mp3', type: 'sphere'},
-  // {obj: null, isPlaying: false, audio: null, name: 'buddha bell', filename: 'budhists-1.mp3', type: 'sphere'},
-  // {obj: null, isPlaying: false, audio: null, name: 'bass', filename: 'bass-silent-web-dummy-1.0.mp3', type: 'cube'},
-  // {obj: null, isPlaying: false, audio: null, name: 'pad', filename: 'covalent-silent-web-dummy-1.0.mp3', type: 'pyramid'},
+  {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere'},
+  {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere'},
+  {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere'},
+  {obj: null, isPlaying: false, audio: null, name: 'Mars', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3', type: 'sphere'},
+  {obj: null, isPlaying: false, audio: null, name: 'Jupiter', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3', type: 'sphere'},
+  {obj: null, isPlaying: false, audio: null, name: 'Saturn', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3', type: 'sphere'},
+  {obj: null, isPlaying: false, audio: null, name: 'Uranus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3', type: 'sphere'},
+  {obj: null, isPlaying: false, audio: null, name: 'Neptune', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3', type: 'sphere'},
+  // {obj: null, isPlaying: false, audio: null, name: 'Pluto', filename: 'snd/sitar1-motif-1.mp3', type: 'sphere'},
 ]
 
 // Should we show the name in 3D text next to sound obj 
@@ -1163,6 +1159,7 @@ export default {
       vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
       vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
 
+      self.annotation.innerHTML = sounds[self.currentId].name;
       self.annotation.style.top = `${vector.y - 84}px`;
       self.annotation.style.left = `${vector.x}px`;
       // self.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
