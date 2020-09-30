@@ -398,7 +398,7 @@ export default {
       self.assignEffects()
 
       // Add noise ball
-      self.addNoiseBall()
+      self.addSun()
 
       // VR
       if (vrEnabled) {
@@ -464,74 +464,18 @@ export default {
 
       self.scene.add(light);
     },
-    addNoiseBall() {
+    addSun() {
       var self = this
-
-      var xElements = 4;
-      var yElements = 4;
-      var scale = 4;
-      var zoom = 6;
-      var seed = 0.015;
-      var t = 0;
-      var fps = 30;
-
-      // Shape's geometries
-      var envMap = new THREE.TextureLoader().load( panoImage );
-      envMap.mapping = THREE.SphericalReflectionMapping;
-
-      self.noiseGeometry = new THREE.SphereGeometry(1, xElements, yElements);
-      self.nMaterial = new THREE.MeshStandardMaterial({
-          color: 0x000000,
-          roughness: 1,
-          metalness: 0.7,
-          emissive: 0xFFFFFF
-          //envMap: envMap
+      var radius = 2, segments = 40;
+      var textureSun = new THREE.TextureLoader().load( '/static/textures/8k_sun.jpg' )
+      self.sunGeometry = new THREE.SphereGeometry(radius, segments, segments)
+      self.sunMaterial = new THREE.MeshPhongMaterial({
+        map: textureSun,
+        emissive: '#F8CE3B',
+        specular: new THREE.Color('grey')								
       })
-
-      var roughnessMap = new THREE.TextureLoader().load( panoImage );
-      roughnessMap.magFilter = THREE.LinearFilter;
-      self.nMaterial.roughnessMap = roughnessMap;
-
-      roughnessMap.magFilter = THREE.NearestFilter;
-      self.nMaterial.roughnessMap = roughnessMap;
-
-      self.sun = new THREE.Mesh(self.noiseGeometry, self.nMaterial); 
-      self.scene.add(self.sun);
-
-      if (vrEnabled) {
-        self.sun.visible = false;
-      }
-
-      // var panoTexture = new THREE.TextureLoader().load( panoImage );
-      // self.nMaterial = new THREE.ShaderMaterial( {
-      //   uniforms: {
-      //     tShine: { type: "t", value: panoTexture },
-      //     time: { type: "f", value: 0 },
-      //     weight: { type: "f", value: 0 }
-      //   },
-      //   vertexShader: nVertex,
-      //   fragmentShader: nFragment
-      //   // vertexShader: document.getElementById( 'vertexShader' ).textContent,
-      //   // fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-      // });
-      // // self.material.wireframe = true
-
-      // // console.log(`material: ${self.material}`)
-
-      // self.mesh = new THREE.Mesh( new THREE.IcosahedronGeometry( 20, 5 ), self.nMaterial );
-      // self.scene.add( self.mesh );
-
-      // Load sound
-      // var audioLoaderNoiseBall = new THREE.AudioLoader()
-
-      // var sound = new THREE.PositionalAudio( self.listener );
-      // sounds[i].audio = sound
-      // var sndPath = path + sounds[i].filename
-      
-      // // Load sound
-      // self.loadSound(sound, i, sndPath)
-      
-      // cubeMesh.add( sound );
+      this.sunMesh = new THREE.Mesh(this.sunGeometry, this.sunMaterial)
+      this.scene.add(this.sunMesh)
     },
     randomIntFromInterval(min, max) { // min and max included 
       return Math.random() * (max - min + 1) + min;
@@ -1109,21 +1053,6 @@ export default {
       }
       else {
         self.reqAnim = requestAnimationFrame( self.render.bind(this) );
-      }
-
-      self.now = Date.now();
-      self.delta = self.now - self.then;
-      if (self.delta > self.interval) {
-        self.then = self.now - (self.delta % self.interval);
-        self.perlinNoise();
-        self.noiseGeometry.dynamic = true;
-        self.noiseGeometry.verticesNeedUpdate = true; 
-        self.noiseGeometry.elementsNeedUpdate = true; 
-        self.noiseGeometry.dispose(); 
-        t += 0.003;
-        zoff = t;
-        yoff = t;
-        // composer.render();
       }
 
       // Update overlay. codepen.io/konradstudio/pen/pogVPrB
