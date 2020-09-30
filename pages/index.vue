@@ -80,6 +80,7 @@ const path = '';
 const roomTone = '';
 
 const sounds = [
+  {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg'},
   {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg'},
   {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg'},
   {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg'},
@@ -398,7 +399,7 @@ export default {
       self.assignEffects()
 
       // Add noise ball
-      self.addSun()
+      // self.addSun()
 
       // VR
       if (vrEnabled) {
@@ -464,19 +465,19 @@ export default {
 
       self.scene.add(light);
     },
-    addSun() {
-      var self = this
-      var radius = 2, segments = 40;
-      var textureSun = new THREE.TextureLoader().load( '/static/textures/8k_sun.jpg' )
-      self.sunGeometry = new THREE.SphereGeometry(radius, segments, segments)
-      self.sunMaterial = new THREE.MeshPhongMaterial({
-        map: textureSun,
-        emissive: '#F8CE3B',
-        specular: new THREE.Color('grey')								
-      })
-      this.sunMesh = new THREE.Mesh(this.sunGeometry, this.sunMaterial)
-      this.scene.add(this.sunMesh)
-    },
+    // addSun() {
+    //   var self = this
+    //   var radius = 2, segments = 40;
+    //   var textureSun = new THREE.TextureLoader().load( '/static/textures/8k_sun.jpg' )
+    //   self.sunGeometry = new THREE.SphereGeometry(radius, segments, segments)
+    //   self.sunMaterial = new THREE.MeshPhongMaterial({
+    //     map: textureSun,
+    //     emissive: '#F8CE3B',
+    //     specular: new THREE.Color('grey')								
+    //   })
+    //   this.sunMesh = new THREE.Mesh(this.sunGeometry, this.sunMaterial)
+    //   this.scene.add(this.sunMesh)
+    // },
     randomIntFromInterval(min, max) { // min and max included 
       return Math.random() * (max - min + 1) + min;
     },
@@ -1183,30 +1184,39 @@ export default {
         // Create texture
         var texture = new THREE.TextureLoader().load( sounds[i].texture )
 
+
+        // var self = this
+        // var radius = 2, segments = 40;
+        // var textureSun = new THREE.TextureLoader().load( '/static/textures/8k_sun.jpg' )
+        // self.sunGeometry = new THREE.SphereGeometry(radius, segments, segments)
+        // self.sunMaterial = new THREE.MeshPhongMaterial({
+        //   map: textureSun,
+        //   emissive: '#F8CE3B',
+        //   specular: new THREE.Color('grey')								
+        // })
+        // this.sunMesh = new THREE.Mesh(this.sunGeometry, this.sunMaterial)
+        // this.scene.add(this.sunMesh)
+
         self.materialObject = new THREE.MeshStandardMaterial({
           color: 0x333333,
           roughness: 0,
           metalness: 0,
-          emissive: 0xffffff,
+          emissive: sounds[i].type === 'sun' ?  0xffffff : '#F8CE3B',
           // emissiveIntensity: 1,
           map: texture ? texture : '',
           // flatShading: true
         })
         var rX, rY, rZ
-        if (randomPos) {
-          // Random position
-          rX = generateRandomNumber(0, self.maxPos)
-          rX = map(rX, 0, self.maxPos, -self.maxPos, self.maxPos);
-          // var rY = generateRandomNumber(0, self.maxPos)
-          rY = 10
-          rZ = generateRandomNumber(0, self.maxPos)
-          rZ = map(rZ, 0, self.maxPos, -self.maxPos, self.maxPos);
+        if (sounds[i].type === 'sun') {
+          rX = 0
+          rY = 0
+          rZ = 0
         }
         else {
           // Distribute in circle
-          rX = Math.sin( i / self.noOFCubes * Math.PI * 2 ) * ringSize
+          rX = Math.sin( i / (self.noOFCubes - 1) * Math.PI * 2 ) * ringSize
           rY = 10
-          rZ = Math.cos( i / self.noOFCubes * Math.PI * 2 ) * ringSize
+          rZ = Math.cos( i / (self.noOFCubes - 1) * Math.PI * 2 ) * ringSize
         }
 
         // First Cannon
