@@ -486,7 +486,8 @@ export default {
       var min = -20;
       var max = 10;
       var stdY = bS * 2 // org: bS * 2
-      self.bodies.forEach((body, i) => {
+      // self.bodies.forEach((body, i) => {
+      self.meshes.forEach((body, i) => {
         var x, y, z;
         if (layout === 'random') { 
           x = map(self.randomIntFromInterval(0, 2), 0, 2, min, max)
@@ -964,7 +965,9 @@ export default {
       const delta = self.clock.getDelta()
       self.controls.update( delta )
       
-      self.updatePhysics()
+      // This is physics - update start
+      // self.updatePhysics()
+      // This is physics - update end
 
       if (self.enableRotation)
         self.checkRotation()
@@ -1200,7 +1203,7 @@ export default {
         self.materialObject = new THREE.MeshStandardMaterial({
           color: 0x333333,
           roughness: 0,
-          metalness: 0,
+          // metalness: 0,
           emissive: sounds[i].type === 'sun' ?  0xffffff : '#F8CE3B',
           // emissiveIntensity: 1,
           map: texture ? texture : '',
@@ -1223,10 +1226,15 @@ export default {
         var boxBody = new CANNON.Body({
           mass: mass
         })
-        boxBody.addShape(shape)
-        boxBody.position.set(rX, rY, rZ)
-        self.world.addBody(boxBody)
-        self.bodies.push(boxBody)
+
+        // This is physics - init start
+        //
+        // boxBody.addShape(shape)
+        // boxBody.position.set(rX, rY, rZ)
+        // self.world.addBody(boxBody)
+        // self.bodies.push(boxBody)
+        //
+        // This is physics - init end
 
         // On collision
         // boxBody.addEventListener('collide', () => {
@@ -1240,8 +1248,10 @@ export default {
         planetGeom = new THREE.SphereBufferGeometry( bS, reso, reso )
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
+        planetMesh.position.set(rX, rY, rZ)
         planetMesh.castShadow = true;
         self.meshes.push(planetMesh)
+        
         sounds[i].shape = planetMesh
         self.scene.add(planetMesh)
 
