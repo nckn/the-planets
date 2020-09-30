@@ -341,6 +341,12 @@ $std-time: 0.25s;
             @include makeBackground('/icons/icon-sun-switch-off.svg', 24px);
           }
         } 
+        &.show-info {
+          @include makeBackground('/icons/icon-show-info.svg', 24px);
+          &.off {
+            @include makeBackground('/icons/icon-sun-switch-off.svg', 24px);
+          }
+        } 
       }
     }
   }

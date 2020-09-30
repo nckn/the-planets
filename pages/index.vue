@@ -162,6 +162,7 @@ export default {
           enabled: true,
           methods: [
             {name: 'sun', disabled: false},
+            {name: 'show-info', disabled: false},
           ]
         },
         // {name: 'togglecam', method: 'toggleCam'},
@@ -670,11 +671,14 @@ export default {
       if (obj.name === 'random') {
         self.distributeBodies('random')
       }
+      if (obj.name === 'anim-rotate') {
+        self.enableRotation = !self.enableRotation
+      }
       if (obj.name === 'sun') {
         self.sun.visible = !self.sun.visible
       }
-      if (obj.name === 'anim-rotate') {
-        self.enableRotation = !self.enableRotation
+      if (obj.name === 'show-info') {
+        self.showAnnotation = !self.showAnnotation
       }
       if (obj.name === 'front' || obj.name === 'top' || obj.name === 'right' || obj.name === 'angle' || obj.name === 'center') {
         self.changeCameraPos(obj.name)
