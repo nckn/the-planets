@@ -334,6 +334,11 @@ $std-time: 0.25s;
           @include makeBackground('/icons/icon-distribute-random.svg', 24px);
         }
       }
+      &.scale {
+        &.scale-actual {
+          @include makeBackground('/icons/icon-scale-actual.svg', 24px);
+        }
+      }
       &.env {
         &.sun {
           @include makeBackground('/icons/icon-sun-switch-on.svg', 24px);

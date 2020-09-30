@@ -158,6 +158,12 @@ export default {
             {name: 'random', method: 'rotate', path: '/svg/icons/icon-distribute-ring-sm'},
           ]
         },
+        {name: 'scale',
+          enabled: true,
+          methods: [
+            {name: 'scale-actual'},
+          ]
+        },
         {name: 'env',
           enabled: true,
           methods: [
