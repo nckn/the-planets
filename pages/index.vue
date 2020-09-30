@@ -410,7 +410,7 @@ export default {
       self.listenForKeyEvents()
 
       // Add lights
-      self.addLights()
+      self.addSunLight()
 
       window.addEventListener('touchmove', self.eventHappens, false);
       window.addEventListener('mousemove', self.eventHappens, false);
@@ -437,19 +437,21 @@ export default {
       // console.log('vr button')
       // console.log(self.vrButton)
     },
-    addLights() {
+    addSunLight() {
       var self = this
       // lights
       // self.scene.add(new THREE.AmbientLight(0x666666));
-      var light = new THREE.DirectionalLight(0xffffff, 1.75);
+      // var light = new THREE.DirectionalLight(0xffffff, 1.75);
+      var light = new THREE.PointLight( 0xffa800, 1, 100 );
+      light.intensity = 8;
       var d = 20;
 
       // light.position.set(d, d, d);
-      light.position.set(0, d, 0); // light from top
+      light.position.set(0, 0, 0); // light from top
       // light.position.set(0, 0, 0); // light from center
 
       light.castShadow = true;
-      //light.shadowCameraVisible = true;
+      light.shadowCameraVisible = true;
 
       light.shadow.mapSize.width = 2048;
       light.shadow.mapSize.height = 2048;
@@ -459,8 +461,8 @@ export default {
       light.shadow.camera.top = d;
       light.shadow.camera.bottom = -d;
 
-      light.shadow.camera.far = 3 * d;
-      light.shadow.camera.near = d;
+      // light.shadow.camera.far = 3 * d;
+      // light.shadow.camera.near = d;
       // light.shadowDarkness = 0.5;
 
       self.scene.add(light);
@@ -772,7 +774,7 @@ export default {
           self.intS.currentHex = self.intS.material.emissive.getHex();
           
           // self.intS.material.emissive.setHex( 0xffffff ); // Hover / highlight material
-          self.intS.material.emissiveIntensity = 0.5;
+          self.intS.material.emissiveIntensity = 0.05;
           
           // Store the intersected id
           self.currentId = self.intS.userData.id
@@ -818,7 +820,8 @@ export default {
       self.meshes.forEach(element => {
         // console.log(element.material)
         if (element != self.intS) {
-          element.material.emissive.setHex( 0x000000 );
+          // element.material.emissive.setHex( 0x000000 );
+          self.intS.material.emissiveIntensity = 0.025;
         }
         // console.log(element.currentHex)
       });
@@ -987,24 +990,26 @@ export default {
       // self.nMaterial.uniforms[ 'weight' ].value = 10.0 * ( 0.5 + 0.5 * Math.sin( 0.00025 * ( Date.now() - self.start ) ) );
 
       // Post-processing
-      if (self.renderComposer) {
-        if (vrEnabled) {
-          self.renderer.render(self.scene, self.camera);
-        }
-        else {
-          self.composer.render()
-        }
+      // self.renderer.render(self.scene, self.camera);
+      self.composer.render()
+      // if (self.renderComposer) {
+      //   if (vrEnabled) {
+      //     self.renderer.render(self.scene, self.camera);
+      //   }
+      //   else {
+      //     self.composer.render()
+      //   }
 
-        // VR Experiment - start
-        // self.renderer.setAnimationLoop( self.animate.bind(this) );
-        // if (vrEnabled) {
-        //   self.renderer.setAnimationLoop( self.render );
-        // }
-        // else {
-        //   self.composer.render()
-        // }
-        // VR Experiment - end
-      }
+      //   // VR Experiment - start
+      //   // self.renderer.setAnimationLoop( self.animate.bind(this) );
+      //   // if (vrEnabled) {
+      //   //   self.renderer.setAnimationLoop( self.render );
+      //   // }
+      //   // else {
+      //   //   self.composer.render()
+      //   // }
+      //   // VR Experiment - end
+      // }
 
       // Scaling
       // log sound analysis
@@ -1105,33 +1110,6 @@ export default {
     map_range(value, low1, high1, low2, high2) {
       return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
     },
-    // This is where the noise is animated
-    perlinNoise() {
-      var self = this;
-      var index = 0;
-      for (var g = 0; g < Math.sqrt(self.noiseGeometry.vertices.length); g++) {
-        xoff = t;
-        for (var f = 0; f < Math.sqrt(self.noiseGeometry.vertices.length); f++) {
-          if (index < self.noiseGeometry.vertices.length) {
-            geo = new THREE.Vector3(self.noiseGeometry.vertices[index].x, self.noiseGeometry.vertices[index].y, self.noiseGeometry.vertices[index].z);
-            direction = new THREE.Vector3();
-            way = direction.subVectors(geo, startPos).normalize();
-            newPos = new THREE.Vector3();
-            perlinMap = self.map_range(noise(xoff, yoff, zoff), 0, 1, -scale, scale);
-            newPos.addVectors(startPos, way.multiplyScalar(zoom + perlinMap / 3));
-            self.noiseGeometry.vertices[index] = newPos;
-            // Change the emissive strength
-            // console.log('strength: ', perlinMap)
-            // console.log('material: ', self.noiseGeometry)
-            self.sun.material.emissiveIntensity = self.map_range(perlinMap, 0, 20, 1, 3);
-          }
-          xoff += seed;
-          index += 1;
-        }
-        yoff += seed;
-        zoff += seed / 4;
-      }
-    },
     initCannon () {
       var self = this
       // Setup our world
@@ -1204,11 +1182,13 @@ export default {
           color: 0x333333,
           roughness: 0,
           // metalness: 0,
-          emissive: sounds[i].type === 'sun' ?  0xffffff : '#F8CE3B',
-          // emissiveIntensity: 1,
+          emissive: sounds[i].type === 'sun' ? '#F8CE3B' : '#000000',
+          // emissive: '#F8CE3B',
+          // emissiveIntensity: 0.025,
           map: texture ? texture : '',
           // flatShading: true
         })
+
         var rX, rY, rZ
         if (sounds[i].type === 'sun') {
           rX = 0
@@ -1218,7 +1198,7 @@ export default {
         else {
           // Distribute in circle
           rX = Math.sin( i / (self.noOFCubes - 1) * Math.PI * 2 ) * ringSize
-          rY = 10
+          rY = 0
           rZ = Math.cos( i / (self.noOFCubes - 1) * Math.PI * 2 ) * ringSize
         }
 
@@ -1249,11 +1229,16 @@ export default {
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
-        planetMesh.castShadow = true;
+        // planetMesh.castShadow = true;
         self.meshes.push(planetMesh)
         
         sounds[i].shape = planetMesh
         self.scene.add(planetMesh)
+
+        if (sounds[i].type === 'sun') {
+          self.sun = planetMesh
+          // planetMesh.visible = false
+        }
 
         // Assign ID to mesh
         planetMesh.userData.id = i
