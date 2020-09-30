@@ -771,7 +771,7 @@ export default {
       // This is where an intersection is detected
       if ( intersects.length > 0 ) {
         if ( self.intS != intersects[ 0 ].object ) {
-          if ( self.intS ) {
+          if ( self.intS ) {            
             self.intS.material.emissive.setHex( self.intS.currentHex );
           }
           self.intS = intersects[ 0 ].object;
@@ -797,6 +797,9 @@ export default {
             }
             else {
               self.startMusic(self.currentId)
+              // This is is where a planet is clicked
+              var pos = self.meshes[self.currentId].position;
+              self.tweenObject(self.controls.target, 1, {x: pos.x, y: pos.y, z: pos.z})
             }
           }
         }
@@ -895,7 +898,7 @@ export default {
       self.removeClickMarker()
 
       // Send the remove mouse joint to server
-      self.removeJointConstraint()
+      // self.removeJointConstraint()
     },
     projectOntoPlane(screenX, screenY, thePlane, camera) {
       var self = this
@@ -1031,15 +1034,14 @@ export default {
         // boxShape.updateConvexPolyhedronRepresentation();
         // Scaling of Physics body - end
 
-        // Scaling of Mesh
-
+        // Scaling of Mesh according to volume
         // X, Y and Z
-        TweenMax.to(element.shape.scale, self.easeTime, {
-          x: scaledVal,
-          y: scaledVal,
-          z: scaledVal,
-          ease: Sine.easeOut
-        })
+        // TweenMax.to(element.shape.scale, self.easeTime, {
+        //   x: scaledVal,
+        //   y: scaledVal,
+        //   z: scaledVal,
+        //   ease: Sine.easeOut
+        // })
         
         // One dimension
         // TweenMax.to(element.shape.scale, self.easeTime, {y: scaledVal, ease: Bounce.easeOut})
@@ -1394,6 +1396,9 @@ export default {
             });
           }
         })
+
+        // Change orbit point
+        // self.controls.target = self.meshes[1].position;
         // Orbit controls - end
       }
     },
