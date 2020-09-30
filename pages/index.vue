@@ -690,7 +690,8 @@ export default {
       if (obj.name === 'scale-actual') {
         sounds.forEach((snd, index) => {
           var s = snd.r[1]
-          self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
+          // self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
+          self.tweenObject(snd.shape.position, 2, {x: index * 10, y: 5, z: 0})
         });
       }
       if (obj.name === 'front' || obj.name === 'top' || obj.name === 'right' || obj.name === 'angle' || obj.name === 'center') {
