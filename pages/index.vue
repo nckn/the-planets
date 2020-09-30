@@ -80,15 +80,15 @@ const path = '';
 const roomTone = '';
 
 const sounds = [
-  {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Mars', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3', type: 'sphere', texture: 'textures/5672_mars_2k_color.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Jupiter', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3', type: 'sphere', texture: 'textures/jupiter_globalmap2.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Saturn', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3', type: 'sphere', texture: 'textures/saturnmap.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Uranus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3', type: 'sphere', texture: 'textures/uranusmap.jpg'},
-  {obj: null, isPlaying: false, audio: null, name: 'Neptune', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3', type: 'sphere', texture: 'textures/neptunemap.jpg'},
+  {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: 10},
+  {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg', r: 1},
+  {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg', r: 1},
+  {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg', r: 1.2},
+  {obj: null, isPlaying: false, audio: null, name: 'Mars', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3', type: 'sphere', texture: 'textures/5672_mars_2k_color.jpg', r: 0.8},
+  {obj: null, isPlaying: false, audio: null, name: 'Jupiter', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3', type: 'sphere', texture: 'textures/jupiter_globalmap2.jpg', r: 5},
+  {obj: null, isPlaying: false, audio: null, name: 'Saturn', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3', type: 'sphere', texture: 'textures/saturnmap.jpg', r: 4},
+  {obj: null, isPlaying: false, audio: null, name: 'Uranus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3', type: 'sphere', texture: 'textures/uranusmap.jpg', r: 3.5},
+  {obj: null, isPlaying: false, audio: null, name: 'Neptune', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3', type: 'sphere', texture: 'textures/neptunemap.jpg', r: 3.5},
   // {obj: null, isPlaying: false, audio: null, name: 'Pluto', filename: 'snd/sitar1-motif-1.mp3', type: 'sphere'},
 ]
 
@@ -263,7 +263,7 @@ export default {
     self.fontLoader = new THREE.FontLoader()
     setTimeout(() => {
       self.init();
-      self.initCannon();
+      // self.initCannon();
       self.createBodies()
       // Orbit controls
       self.setOrbitControls()
@@ -774,7 +774,7 @@ export default {
           self.intS.currentHex = self.intS.material.emissive.getHex();
           
           // self.intS.material.emissive.setHex( 0xffffff ); // Hover / highlight material
-          self.intS.material.emissiveIntensity = 0.05;
+          // self.intS.material.emissiveIntensity = 0.05;
           
           // Store the intersected id
           self.currentId = self.intS.userData.id
@@ -821,7 +821,7 @@ export default {
         // console.log(element.material)
         if (element != self.intS) {
           // element.material.emissive.setHex( 0x000000 );
-          self.intS.material.emissiveIntensity = 0.025;
+          // self.intS.material.emissiveIntensity = 0.025;
         }
         // console.log(element.currentHex)
       });
@@ -1110,36 +1110,6 @@ export default {
     map_range(value, low1, high1, low2, high2) {
       return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
     },
-    initCannon () {
-      var self = this
-      // Setup our world
-      self.world = new CANNON.World();
-      self.world.quatNormalizeSkip = 0;
-      self.world.quatNormalizeFast = false;
-
-      self.world.gravity.set(0, -10, 0);
-      // self.world.gravity.set(0, 0, 0); // No gravity
-      self.world.broadphase = new CANNON.NaiveBroadphase();
-
-      // Create a plane
-      var groundShape = new CANNON.Plane();
-      var groundBody = new CANNON.Body({
-        mass: 0
-      });
-      groundBody.addShape(groundShape);
-      groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-      self.world.addBody(groundBody);
-
-      // Joint body
-      var shape = new CANNON.Sphere(0.1);
-      self.jointBody = new CANNON.Body({
-        mass: 0
-      });
-      self.jointBody.addShape(shape);
-      self.jointBody.collisionFilterGroup = 0;
-      self.jointBody.collisionFilterMask = 0;
-      self.world.addBody(self.jointBody)
-    },
     // This is where all cubes are being created
     createBodies () {
       var self = this 
@@ -1225,7 +1195,7 @@ export default {
         // for some reason geometry is double of Cannon body
         var planetGeom = null;
         // Create sphere
-        planetGeom = new THREE.SphereBufferGeometry( bS, reso, reso )
+        planetGeom = new THREE.SphereBufferGeometry( sounds[i].r, reso, reso )
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
@@ -1502,6 +1472,36 @@ export default {
 
         // }
       })
+    },
+    initCannon () {
+      var self = this
+      // Setup our world
+      self.world = new CANNON.World();
+      self.world.quatNormalizeSkip = 0;
+      self.world.quatNormalizeFast = false;
+
+      self.world.gravity.set(0, -10, 0);
+      // self.world.gravity.set(0, 0, 0); // No gravity
+      self.world.broadphase = new CANNON.NaiveBroadphase();
+
+      // Create a plane
+      var groundShape = new CANNON.Plane();
+      var groundBody = new CANNON.Body({
+        mass: 0
+      });
+      groundBody.addShape(groundShape);
+      groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
+      self.world.addBody(groundBody);
+
+      // Joint body
+      var shape = new CANNON.Sphere(0.1);
+      self.jointBody = new CANNON.Body({
+        mass: 0
+      });
+      self.jointBody.addShape(shape);
+      self.jointBody.collisionFilterGroup = 0;
+      self.jointBody.collisionFilterMask = 0;
+      self.world.addBody(self.jointBody)
     },
     addGuides () {
       var self = this
