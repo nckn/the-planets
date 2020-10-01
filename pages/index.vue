@@ -308,7 +308,7 @@ export default {
       // scene
       self.scene = new THREE.Scene();
       // self.scene.fog = new THREE.Fog(0x000000, 30, 180) // From SceneControls project
-      self.scene.fog = new THREE.Fog(0x000000, 50, 500);
+      self.scene.fog = new THREE.Fog(0x000000, 50, 1500);
 
       // camera
       self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.5, 10000);
@@ -708,10 +708,24 @@ export default {
       // Scale
       if (obj.name === 'scale-actual') {
         self.actualSize = !self.actualSize
+        // acS = !acS
+        // console.log(acS)
         self.planetList.forEach((snd, index) => {
-          var s = snd.r[1]
+          var pre;
+          if (index === 0) {
+            pre = 0
+          }
+          else {
+            pre = self.planetList[index - 1].r[self.actualSize === true ? 0 : 1]
+          }
+          var s = snd.r[self.actualSize === true ? 0 : 1]
+          var nX = (pre * 2) + (index * 50)
+          
+          console.log(pre, snd.name)
+          console.log('x: ', nX)
+
           self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
-          self.tweenObject(snd.shape.position, 2, {x: index * 10, y: 5, z: 0})
+          self.tweenObject(snd.shape.position, 2, {x: nX, y: 5, z: 0})
         });
       }
       if (obj.name === 'front' || obj.name === 'top' || obj.name === 'right' || obj.name === 'angle' || obj.name === 'center') {
