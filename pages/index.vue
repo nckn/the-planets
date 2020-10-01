@@ -169,6 +169,7 @@ export default {
           methods: [
             {name: 'sun', disabled: false},
             {name: 'show-info', disabled: false},
+            {name: 'floor', disabled: false},
           ]
         },
         // {name: 'togglecam', method: 'toggleCam'},
@@ -300,7 +301,8 @@ export default {
 
       // scene
       self.scene = new THREE.Scene();
-      self.scene.fog = new THREE.Fog(0x000000, 50, 1000);
+      // self.scene.fog = new THREE.Fog(0x000000, 30, 180) // From SceneControls project
+      self.scene.fog = new THREE.Fog(0x000000, 50, 500);
 
       // camera
       self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.5, 10000);
@@ -332,8 +334,8 @@ export default {
       var geometry = new THREE.PlaneGeometry(5000, 5000, 1, 1);
       //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
       var material = new THREE.MeshLambertMaterial({
-        // color: 0x151515
-        color: 0x050505
+        color: 0x151515
+        // color: 0x050505
       });
       self.markerMaterial = new THREE.MeshLambertMaterial({
         color: 0xff0000
@@ -344,7 +346,8 @@ export default {
       self.floor.castShadow = true;
       self.floor.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
       self.floor.receiveShadow = true;
-      self.floor.visible = false;
+      self.floor.position.y = -1;
+      // self.floor.visible = false;
       self.scene.add(self.floor);
 
       // Sphere sound
@@ -685,6 +688,9 @@ export default {
       }
       if (obj.name === 'show-info') {
         self.showAnnotation = !self.showAnnotation
+      }
+      if (obj.name === 'floor') {
+        self.floor.visible = !self.floor.visible
       }
       // Scale
       if (obj.name === 'scale-actual') {
@@ -1219,7 +1225,7 @@ export default {
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
-        // planetMesh.castShadow = true;
+        planetMesh.castShadow = true;
         self.meshes.push(planetMesh)
         
         sounds[i].shape = planetMesh
