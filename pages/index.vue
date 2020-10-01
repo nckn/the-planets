@@ -66,7 +66,7 @@ import CANNON from 'cannon'
 
 import globalFunctions from '@/mixins/globalFunctions.js'
 
-import planets from 'static/json/planets.json'
+// import planets from 'static/json/planets.json'
 // const planets = require( 'static/json/planets.json' )
 // alert(planets)
 
@@ -83,18 +83,18 @@ const path = '';
 
 const roomTone = '';
 
-// const planets = [
-//   {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: [10, 1]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg', r: [1, 1.2]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg', r: [1, 1.8]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg', r: [1.2, 1.7]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Mars', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3', type: 'sphere', texture: 'textures/5672_mars_2k_color.jpg', r: [0.8, 1]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Jupiter', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3', type: 'sphere', texture: 'textures/jupiter_globalmap2.jpg', r: [5, 5.2]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Saturn', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3', type: 'sphere', texture: 'textures/saturnmap.jpg', r: [4, 4.2]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Uranus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3', type: 'sphere', texture: 'textures/uranusmap.jpg', r: [3.5, 3.7]},
-//   {obj: null, isPlaying: false, audio: null, name: 'Neptune', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3', type: 'sphere', texture: 'textures/neptunemap.jpg', r: [3.5, 3.8]},
-//   // {obj: null, isPlaying: false, audio: null, name: 'Pluto', filename: 'snd/sitar1-motif-1.mp3', type: 'sphere'},
-// ]
+const planets = [
+  {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: [10, 1]},
+  {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg', r: [1, 1.2]},
+  {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg', r: [1, 1.8]},
+  {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg', r: [1.2, 1.7]},
+  {obj: null, isPlaying: false, audio: null, name: 'Mars', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3', type: 'sphere', texture: 'textures/5672_mars_2k_color.jpg', r: [0.8, 1]},
+  {obj: null, isPlaying: false, audio: null, name: 'Jupiter', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3', type: 'sphere', texture: 'textures/jupiter_globalmap2.jpg', r: [5, 5.2]},
+  {obj: null, isPlaying: false, audio: null, name: 'Saturn', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3', type: 'sphere', texture: 'textures/saturnmap.jpg', r: [4, 4.2]},
+  {obj: null, isPlaying: false, audio: null, name: 'Uranus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3', type: 'sphere', texture: 'textures/uranusmap.jpg', r: [3.5, 3.7]},
+  {obj: null, isPlaying: false, audio: null, name: 'Neptune', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3', type: 'sphere', texture: 'textures/neptunemap.jpg', r: [3.5, 3.8]},
+  // {obj: null, isPlaying: false, audio: null, name: 'Pluto', filename: 'snd/sitar1-motif-1.mp3', type: 'sphere'},
+]
 
 // Should we show the name in 3D text next to sound obj 
 const shouldShowText = false;
@@ -274,14 +274,14 @@ export default {
     self.clock = new THREE.Clock()
     // Fonts
     self.fontLoader = new THREE.FontLoader()
-    setTimeout(() => {
-      self.init();
+    self.$nextTick(
+      self.init(),
       // self.initCannon();
-      self.createBodies()
+      self.createBodies(),
       // Orbit controls
-      self.setOrbitControls()
-      self.render();
-    }, 1000)
+      self.setOrbitControls(),
+      self.render()
+    )
   },
   // beforeDestroy () {
   //   var self = this
@@ -1246,11 +1246,11 @@ export default {
 
         // Geometry
         // for some reason geometry is double of Cannon body
-        var planetGeom = null;
+        // var planetGeom = null;
         // Create sphere
         // console.log(self.planetList[i].r[0])
         // return
-        planetGeom = new THREE.SphereBufferGeometry( self.planetList[i].r[0], reso, reso )
+        var planetGeom = new THREE.SphereBufferGeometry( self.planetList[i].r[0], reso, reso )
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
