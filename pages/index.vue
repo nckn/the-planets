@@ -308,7 +308,7 @@ export default {
       // scene
       self.scene = new THREE.Scene();
       // self.scene.fog = new THREE.Fog(0x000000, 30, 180) // From SceneControls project
-      self.scene.fog = new THREE.Fog(0x000000, 50, 1500);
+      // self.scene.fog = new THREE.Fog(0x000000, 50, 1500);
 
       // camera
       self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.5, 10000);
@@ -710,6 +710,8 @@ export default {
         self.actualSize = !self.actualSize
         // acS = !acS
         // console.log(acS)
+
+        var sum = 0;
         self.planetList.forEach((snd, index) => {
           var pre;
           if (index === 0) {
@@ -718,14 +720,22 @@ export default {
           else {
             pre = self.planetList[index - 1].r[self.actualSize === true ? 0 : 1]
           }
+
+          sum += pre
+
           var s = snd.r[self.actualSize === true ? 0 : 1]
-          var nX = (pre * 2) + (index * 50)
+          var nX = ((sum + index) * 15) + (s * 2) 
+          // var nX = (pre * 2) + (index * 50)
           
           console.log(pre, snd.name)
           console.log('x: ', nX)
 
+          var nY = s
+          
+          console.log('y: ', nY)
+
           self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
-          self.tweenObject(snd.shape.position, 2, {x: nX, y: 5, z: 0})
+          self.tweenObject(snd.shape.position, 2, {x: nX, y: nY, z: 0})
         });
       }
       if (obj.name === 'front' || obj.name === 'top' || obj.name === 'right' || obj.name === 'angle' || obj.name === 'center') {
