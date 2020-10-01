@@ -67,6 +67,7 @@ import CANNON from 'cannon'
 import globalFunctions from '@/mixins/globalFunctions.js'
 
 // import planets from 'static/json/planets.json'
+// alert(planets)
 
 // Gaze event
 // import GazeEvent from 'gaze-event'
@@ -460,8 +461,15 @@ export default {
       // ambientLight.castShadow = true;
       // ambientLight.receiveShadow = true;
       self.scene.add(ambientLight);
-      // var light = new THREE.DirectionalLight(0xffffff, 1.75);
+
+      // var dirLight = new THREE.DirectionalLight(0xffffff, 1.75);
+      // dirLight.position.set( 0, 20, 0);
+      // dirLight.castShadow = true;
+      // dirLight.rotation.x = -Math.PI / 2.0;
+      // self.scene.add(dirLight);
+      
       var light = new THREE.PointLight( 0xffa800, 0, 100 );
+      light.position.set( 0, 0, 0);
       light.intensity = 5
       
       var d = 20;
@@ -476,15 +484,6 @@ export default {
       light.shadow.camera.right = d;
       light.shadow.camera.top = d;
       light.shadow.camera.bottom = -d;
-
-      // light.shadow.camera.left = -d;
-      // light.shadow.camera.right = d;
-      // light.shadow.camera.top = d;
-      // light.shadow.camera.bottom = -d;
-
-      // light.shadow.camera.far = 3 * d;
-      // light.shadow.camera.near = d;
-      // light.shadowDarkness = 0.5;
 
       self.scene.add(light);
     },
@@ -1247,6 +1246,8 @@ export default {
         // for some reason geometry is double of Cannon body
         var planetGeom = null;
         // Create sphere
+        // console.log(planets[i].r[0])
+        // return
         planetGeom = new THREE.SphereBufferGeometry( planets[i].r[0], reso, reso )
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
