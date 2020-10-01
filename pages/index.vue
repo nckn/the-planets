@@ -330,27 +330,7 @@ export default {
       //   // console.log(self.listener.context.state)
       // } 
 
-      // floor
-      var geometry = new THREE.PlaneGeometry(5000, 5000, 1, 1);
-      //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
-      // var material = new THREE.MeshLambertMaterial({
-      var material = new THREE.MeshPhongMaterial({
-        color: 0x151515,
-        side: THREE.DoubleSide,
-        // color: 0x050505
-      });
-      self.markerMaterial = new THREE.MeshLambertMaterial({
-        color: 0xff0000
-      });
-      
-      //THREE.ColorUtils.adjustHSV( material.color, 0, 0, 0.9 );
-      self.floor = new THREE.Mesh(geometry, material);
-      self.floor.castShadow = true;
-      self.floor.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
-      self.floor.receiveShadow = true;
-      self.floor.position.y = -1;
-      // self.floor.visible = false;
-      self.scene.add(self.floor);
+      self.createFloor()
 
       // Sphere sound
       // var sphere1 = new THREE.SphereBufferGeometry( 20, 32, 16 );
@@ -403,7 +383,8 @@ export default {
       // self.renderer.gammaInput = true;
       // self.renderer.gammaOutput = true;
       self.renderer.shadowMap.enabled = true;
-      this.renderer.shadowMapSoft = true
+      // this.renderer.shadowMapSoft = true
+      self.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
       // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
       // this.renderer.physicallyCorrectLights = true
 
@@ -473,29 +454,35 @@ export default {
       // self.scene.add(spotLight);
       // Spot light - end
 
-      self.scene.add(new THREE.AmbientLight(0x666666));
+      var ambientLight = new THREE.AmbientLight(0x666666);
+      // ambientLight.castShadow = true;
+      // ambientLight.receiveShadow = true;
+      self.scene.add(ambientLight);
       // var light = new THREE.DirectionalLight(0xffffff, 1.75);
-      var light = new THREE.PointLight( 0xffa800, 1, 100 );
-      light.intensity = 8;
-
-      var d = 14;
-      light.shadow.bias = 0.01;
-      light.shadow.camera.fov	= 45
-      light.shadow.camera.left = -d
-      light.shadow.camera.right	= d
-      light.shadow.camera.top	= d
-      light.shadow.camera.bottom = - d
+      var light = new THREE.PointLight( 0xffa800, 0, 100 );
+      light.intensity = 5
       
-      light.shadow.camera.near = 2 // 0.01
-      light.shadow.camera.far	= 50 // 150
+      var d = 20;
+      light.receiveShadow = true;
+      light.castShadow = true;
+      light.shadowCameraVisible = true;
 
-      // light.shadowCameraVisible = true
+      light.shadow.mapSize.width = 2048;
+      light.shadow.mapSize.height = 2048;
 
-      // light.shadow.bias = 0.0
-      // light.shadowDarkness	= 0.5
+      light.shadow.camera.left = -d;
+      light.shadow.camera.right = d;
+      light.shadow.camera.top = d;
+      light.shadow.camera.bottom = -d;
 
-      light.shadow.mapSize.width = 1024
-      light.shadow.mapSize.height	= 1024
+      // light.shadow.camera.left = -d;
+      // light.shadow.camera.right = d;
+      // light.shadow.camera.top = d;
+      // light.shadow.camera.bottom = -d;
+
+      // light.shadow.camera.far = 3 * d;
+      // light.shadow.camera.near = d;
+      // light.shadowDarkness = 0.5;
 
       self.scene.add(light);
     },
@@ -1158,17 +1145,45 @@ export default {
     map_range(value, low1, high1, low2, high2) {
       return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
     },
+    createFloor() {
+      var self = this 
+      // floor
+      var geometry = new THREE.PlaneGeometry(5000, 5000, 100, 100);
+      //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
+      var material = new THREE.MeshLambertMaterial({
+      // var material = new THREE.MeshPhongMaterial({
+        // color: 0xffffff,
+        color: 0x151515,
+        // side: THREE.DoubleSide,
+        // color: 0x050505
+      });
+      self.markerMaterial = new THREE.MeshLambertMaterial({
+        color: 0xff0000
+      });
+      
+      //THREE.ColorUtils.adjustHSV( material.color, 0, 0, 0.9 );
+      self.floor = new THREE.Mesh(geometry, material);
+      
+      // self.floor.quaternion.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+      // self.floor.castShadow = true;
+      self.floor.receiveShadow = true;
+      self.floor.rotation.x = -Math.PI / 2.0;
+      
+      self.floor.position.y = -1;
+      // self.floor.visible = false;
+      self.scene.add(self.floor);
+
+      //Create a plane that receives shadows (but does not cast them)
+      // var planeGeometry = new THREE.PlaneBufferGeometry( 20, 20, 32, 32 );
+      // var planeMaterial = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )
+      // var plane = new THREE.Mesh( planeGeometry, planeMaterial );
+      // plane.receiveShadow = true;
+      // self.scene.add( plane );
+    },
     // This is where all cubes are being created
     createBodies () {
       var self = this 
-      // cubes
-      // var cubeGeo = new THREE.BoxGeometry(1, 1, 1, 10, 10);
-      // var cubeMaterial = new THREE.MeshPhongMaterial({
-        //   color: 0x888888
-      // });
-
       var mass = 5
-
       // var shape = new CANNON.Box(new CANNON.Vec3(bS, bS, bS))
       self.noOFCubes = sounds.length
       for (var i = 0; i < self.noOFCubes; i++) {
@@ -1182,19 +1197,6 @@ export default {
 
         // Create texture
         var texture = new THREE.TextureLoader().load( sounds[i].texture )
-
-
-        // var self = this
-        // var radius = 2, segments = 40;
-        // var textureSun = new THREE.TextureLoader().load( '/static/textures/8k_sun.jpg' )
-        // self.sunGeometry = new THREE.SphereGeometry(radius, segments, segments)
-        // self.sunMaterial = new THREE.MeshPhongMaterial({
-        //   map: textureSun,
-        //   emissive: '#F8CE3B',
-        //   specular: new THREE.Color('grey')								
-        // })
-        // this.sunMesh = new THREE.Mesh(this.sunGeometry, this.sunMaterial)
-        // this.scene.add(this.sunMesh)
 
         self.materialObject = new THREE.MeshStandardMaterial({
           color: 0x333333,
@@ -1220,13 +1222,13 @@ export default {
           rZ = Math.cos( i / (self.noOFCubes - 1) * Math.PI * 2 ) * ringSize
         }
 
-        // First Cannon
-        var boxBody = new CANNON.Body({
-          mass: mass
-        })
 
         // This is physics - init start
         //
+        // // First Cannon
+        // var boxBody = new CANNON.Body({
+        //   mass: mass
+        // })
         // boxBody.addShape(shape)
         // boxBody.position.set(rX, rY, rZ)
         // self.world.addBody(boxBody)
@@ -1248,7 +1250,7 @@ export default {
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
         planetMesh.castShadow = true;
-        self.floor.receiveShadow = true;
+        // planetMesh.receiveShadow = true;
         self.meshes.push(planetMesh)
         
         sounds[i].shape = planetMesh
