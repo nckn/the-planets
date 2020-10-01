@@ -66,7 +66,8 @@ import CANNON from 'cannon'
 
 import globalFunctions from '@/mixins/globalFunctions.js'
 
-// import planets from 'static/json/planets.json'
+import planets from 'static/json/planets.json'
+// const planets = require( 'static/json/planets.json' )
 // alert(planets)
 
 // Gaze event
@@ -82,18 +83,18 @@ const path = '';
 
 const roomTone = '';
 
-const planets = [
-  {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: [10, 1]},
-  {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg', r: [1, 1.2]},
-  {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg', r: [1, 1.8]},
-  {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg', r: [1.2, 1.7]},
-  {obj: null, isPlaying: false, audio: null, name: 'Mars', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3', type: 'sphere', texture: 'textures/5672_mars_2k_color.jpg', r: [0.8, 1]},
-  {obj: null, isPlaying: false, audio: null, name: 'Jupiter', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3', type: 'sphere', texture: 'textures/jupiter_globalmap2.jpg', r: [5, 5.2]},
-  {obj: null, isPlaying: false, audio: null, name: 'Saturn', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3', type: 'sphere', texture: 'textures/saturnmap.jpg', r: [4, 4.2]},
-  {obj: null, isPlaying: false, audio: null, name: 'Uranus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3', type: 'sphere', texture: 'textures/uranusmap.jpg', r: [3.5, 3.7]},
-  {obj: null, isPlaying: false, audio: null, name: 'Neptune', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3', type: 'sphere', texture: 'textures/neptunemap.jpg', r: [3.5, 3.8]},
-  // {obj: null, isPlaying: false, audio: null, name: 'Pluto', filename: 'snd/sitar1-motif-1.mp3', type: 'sphere'},
-]
+// const planets = [
+//   {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: [10, 1]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg', r: [1, 1.2]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg', r: [1, 1.8]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg', r: [1.2, 1.7]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Mars', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3', type: 'sphere', texture: 'textures/5672_mars_2k_color.jpg', r: [0.8, 1]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Jupiter', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3', type: 'sphere', texture: 'textures/jupiter_globalmap2.jpg', r: [5, 5.2]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Saturn', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3', type: 'sphere', texture: 'textures/saturnmap.jpg', r: [4, 4.2]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Uranus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3', type: 'sphere', texture: 'textures/uranusmap.jpg', r: [3.5, 3.7]},
+//   {obj: null, isPlaying: false, audio: null, name: 'Neptune', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3', type: 'sphere', texture: 'textures/neptunemap.jpg', r: [3.5, 3.8]},
+//   // {obj: null, isPlaying: false, audio: null, name: 'Pluto', filename: 'snd/sitar1-motif-1.mp3', type: 'sphere'},
+// ]
 
 // Should we show the name in 3D text next to sound obj 
 const shouldShowText = false;
@@ -143,6 +144,7 @@ export default {
     return {
       debug: false,
       showAnnotation: true,
+      planetList: planets,
       guiControls: [
         {name: 'camerapos',
           enabled: true,
@@ -467,9 +469,9 @@ export default {
       // dirLight.castShadow = true;
       // dirLight.rotation.x = -Math.PI / 2.0;
       // self.scene.add(dirLight);
-      
+      var sunOffsetY = 0
       var light = new THREE.PointLight( 0xffa800, 0, 100 );
-      light.position.set( 0, 0, 0);
+      light.position.set( 0, sunOffsetY, 0);
       light.intensity = 5
       
       var d = 20;
@@ -633,7 +635,7 @@ export default {
       console.log(id)
       // console.log(planets[id].isPlaying)
       // self.isPlaying = !self.isPlaying
-      planets.forEach((sound, index) => {
+      self.planetList.forEach((sound, index) => {
         if (typeof id === 'number') {
           if (index === id) {
             sound.audio.play()
@@ -657,7 +659,7 @@ export default {
     },
     stopMusic(id) {
       var self = this
-      planets.forEach((sound, index) => {
+      self.planetList.forEach((sound, index) => {
         if (index === id) {
           sound.audio.stop()
           sound.isPlaying = !sound.isPlaying
@@ -704,7 +706,7 @@ export default {
       }
       // Scale
       if (obj.name === 'scale-actual') {
-        planets.forEach((snd, index) => {
+        self.planetList.forEach((snd, index) => {
           var s = snd.r[1]
           // self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
           self.tweenObject(snd.shape.position, 2, {x: index * 10, y: 5, z: 0})
@@ -822,7 +824,7 @@ export default {
           console.log(e.type)
           if (e.type === 'mousedown' || e.type === 'touchstart') {
             console.log(e.type)
-            if (planets[self.currentId].isPlaying) {
+            if (self.planetList[self.currentId].isPlaying) {
               self.stopMusic(self.currentId)
             }
             else {
@@ -1050,10 +1052,10 @@ export default {
 
       // Scaling
       // log sound analysis
-      planets.forEach((element, index) => {
-        // element.shape.scale.y = planets[0].obj.analyser.getFrequencyData()
+      self.planetList.forEach((element, index) => {
+        // element.shape.scale.y = self.planetList[0].obj.analyser.getFrequencyData()
         
-        var freq = planets[index].analyser.getFrequencyData()[0]
+        var freq = self.planetList[index].analyser.getFrequencyData()[0]
         var scaledVal = map(freq, 0, 256, 1, scaleVal)
         // element.shape.scale.set(scaledVal * 2, scaledVal * 2, scaledVal * 2)
         
@@ -1085,8 +1087,8 @@ export default {
         // self.bodies[index].shape.boundingSphereRadiusNeedsUpdate = true
         // self.bodies[index].shape.updateConvexPolyhedronRepresentation()
       });
-      // console.log('sound: ', planets[0].obj.analyser.getFrequencyData().length)
-      // console.log('sound: ', planets[0].shape) 
+      // console.log('sound: ', self.planetList[0].obj.analyser.getFrequencyData().length)
+      // console.log('sound: ', self.planetList[0].shape) 
       
       if (self.debug) {
         self.$refs.debug_text.innerHTML = 'rendering'
@@ -1138,7 +1140,7 @@ export default {
       vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
       vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
 
-      self.annotation.innerHTML = planets[self.currentId].name;
+      self.annotation.innerHTML = self.planetList[self.currentId].name;
       self.annotation.style.top = `${vector.y - 84}px`;
       self.annotation.style.left = `${vector.x}px`;
       // self.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
@@ -1186,10 +1188,10 @@ export default {
       var self = this 
       var mass = 5
       // var shape = new CANNON.Box(new CANNON.Vec3(bS, bS, bS))
-      self.noOFCubes = planets.length
+      self.noOFCubes = self.planetList.length
       for (var i = 0; i < self.noOFCubes; i++) {
         var shape;
-        if (planets[i].type === 'sphere') {
+        if (self.planetList[i].type === 'sphere') {
           shape = new CANNON.Sphere(bS)
         }
         else {
@@ -1197,13 +1199,13 @@ export default {
         }
 
         // Create texture
-        var texture = new THREE.TextureLoader().load( planets[i].texture )
+        var texture = new THREE.TextureLoader().load( self.planetList[i].texture )
 
         self.materialObject = new THREE.MeshStandardMaterial({
           color: 0x333333,
           roughness: 0,
           // metalness: 0,
-          emissive: planets[i].type === 'sun' ? '#F8CE3B' : '#000000',
+          emissive: self.planetList[i].type === 'sun' ? '#F8CE3B' : '#000000',
           // emissive: '#F8CE3B',
           // emissiveIntensity: 0.025,
           map: texture ? texture : '',
@@ -1211,7 +1213,7 @@ export default {
         })
 
         var rX, rY, rZ
-        if (planets[i].type === 'sun') {
+        if (self.planetList[i].type === 'sun') {
           rX = 0
           rY = 0
           rZ = 0
@@ -1246,9 +1248,9 @@ export default {
         // for some reason geometry is double of Cannon body
         var planetGeom = null;
         // Create sphere
-        // console.log(planets[i].r[0])
+        // console.log(self.planetList[i].r[0])
         // return
-        planetGeom = new THREE.SphereBufferGeometry( planets[i].r[0], reso, reso )
+        planetGeom = new THREE.SphereBufferGeometry( self.planetList[i].r[0], reso, reso )
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
@@ -1256,10 +1258,10 @@ export default {
         // planetMesh.receiveShadow = true;
         self.meshes.push(planetMesh)
         
-        planets[i].shape = planetMesh
+        self.planetList[i].shape = planetMesh
         self.scene.add(planetMesh)
 
-        if (planets[i].type === 'sun') {
+        if (self.planetList[i].type === 'sun') {
           self.sun = planetMesh
           // planetMesh.visible = false
         }
@@ -1275,8 +1277,8 @@ export default {
         self.audioLoader[i] = new THREE.AudioLoader()
 
         var sound = new THREE.PositionalAudio( self.listener );
-        planets[i].audio = sound
-        var sndPath = path + planets[i].filename
+        self.planetList[i].audio = sound
+        var sndPath = path + self.planetList[i].filename
         
         // Load sound
         self.loadSound(sound, i, sndPath)
@@ -1285,15 +1287,15 @@ export default {
         
         // Load text
         if (shouldShowText) {
-          self.loadText(i, planets[i].name, {x: rX, y: rY, z: rZ})
+          self.loadText(i, self.planetList[i].name, {x: rX, y: rY, z: rZ})
         }
         
         // console.log('it is 2, ', sndPath)
 
         // if (i === 0) {
-        //   console.log('it is 2, ', path + planets[i])
+        //   console.log('it is 2, ', path + self.planetList[i])
         //   var snd = new THREE.PositionalAudio( self.listener );
-        //   self.audioLoader[i].load( path + planets[0], function ( buffer ) {
+        //   self.audioLoader[i].load( path + self.planetList[0], function ( buffer ) {
         //     snd.setBuffer( buffer );
         //     snd.setLoop( true );
         //     snd.setRefDistance( 20 );
@@ -1304,9 +1306,9 @@ export default {
         //   // boxBody.add( snd )
         //   cubeMesh.add( snd )
         // } else {
-        //   console.log('it is 2, ', path + planets[i])
+        //   console.log('it is 2, ', path + self.planetList[i])
         //   var sound2 = new THREE.PositionalAudio( self.listener );
-        //   self.audioLoader[i].load( path + planets[1], function ( buffer ) {
+        //   self.audioLoader[i].load( path + self.planetList[1], function ( buffer ) {
         //     sound2.setBuffer( buffer );
         //     sound2.setRefDistance( 20 );
         //     sound2.play();
@@ -1350,7 +1352,7 @@ export default {
         textMesh.position.z = pos.z
         // textMesh.position.x = 0
         textMesh.lookAt(self.camera.position)
-        planets[i].text = textMesh
+        self.planetList[i].text = textMesh
         self.scene.add(textMesh)
         // Iterate font inc load
         self.inc++
@@ -1370,10 +1372,10 @@ export default {
         sound.setRefDistance( 20 )
         sound.setLoop( true )
         // sound.play()
-        planets[i].audio = sound
+        self.planetList[i].audio = sound
         // console.log('its working alright')
       })
-      planets[i].analyser = new THREE.AudioAnalyser( sound, 32 );
+      self.planetList[i].analyser = new THREE.AudioAnalyser( sound, 32 );
       // console.log()
     },
     addMouseConstraint (x, y, z, body) {
@@ -1439,7 +1441,7 @@ export default {
           // console.log('x: ', self.camera.position.y)
           // console.log('z: ', self.camera.position.z)
           if (shouldShowText) {
-            planets.forEach(element => {
+            self.planetList.forEach(element => {
               element.text.lookAt(self.camera.position)
             });
           }

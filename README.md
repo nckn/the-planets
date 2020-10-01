@@ -64,6 +64,33 @@ https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3
 All above are found at 
 https://archive.org/details/Holst-ThePlanets/Marte.mp3
 
+
+
+Scale
+https://www.robertoziche.com/illustrations/
+
+// Make Betelgeuse. The sun is 121.9 times bigger than jupiter. 5 > 0.04 > 0.000031. r = 100
+// Make sun. The sun is 121.9 times bigger than jupiter. 5 > 0.04 > 0.000031. r = 5
+// Make Jupiter. Jupiter is 121.9 times bigger than jupiter. r = 0.04
+// Make Earth. r = 0.00328
+
+// Sun: approximately 695,700 km (432,300 mi)
+
+// Planets (and moon)
+// Mercury: 2,440 km (1,516 mi)
+// Venus: 6,052 km (3,760 mi)
+// Earth: 6,371 km (3,959 mi)
+// Moon: 1,737 km (1,079 mi)
+// Mars: 3,390 km (2,106 mi)
+// Jupiter: 69,911 km (43,441 mi)
+// Saturn: 58,232 km (36,184 mi)
+// Uranus: 25,362 km (15,759 mi)
+// Neptune: 24,622 km (15,299 mi)
+// Pluto: 1,188 km (738 mi) 
+
+
+
+
 Other
 
 
