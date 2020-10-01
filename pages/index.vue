@@ -447,7 +447,7 @@ export default {
     addSunLight() {
       var self = this
       // lights
-      // self.scene.add(new THREE.AmbientLight(0x666666));
+      self.scene.add(new THREE.AmbientLight(0x666666));
       // var light = new THREE.DirectionalLight(0xffffff, 1.75);
       var light = new THREE.PointLight( 0xffa800, 1, 100 );
       light.intensity = 8;
