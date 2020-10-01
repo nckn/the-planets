@@ -84,7 +84,7 @@ const path = '';
 const roomTone = '';
 
 const planets = [
-  {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: [10, 10]},
+  {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: [10, 1]},
   {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg', r: [1, 0.035]},
   {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg', r: [1, 0.087]},
   {obj: null, isPlaying: false, audio: null, name: 'Earth', filename: 'snd/heartbeat.mp3', type: 'sphere', texture: 'textures/2_no_clouds_4k.jpg', r: [1.2, 0.092]},
@@ -707,21 +707,12 @@ export default {
       }
       // Scale
       if (obj.name === 'scale-actual') {
-        if (self.actualSize) {
-          self.planetList.forEach((snd, index) => {
-            var s = snd.r[0]
-            self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
-            self.tweenObject(snd.shape.position, 2, {x: index * 10, y: 5, z: 0})
-          });
-        }
-        else {
-          self.planetList.forEach((snd, index) => {
-            var s = snd.r[1]
-            self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
-            self.tweenObject(snd.shape.position, 2, {x: index * 10, y: 5, z: 0})
-          });
-        }
         self.actualSize = !self.actualSize
+        self.planetList.forEach((snd, index) => {
+          var s = snd.r[1]
+          self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
+          self.tweenObject(snd.shape.position, 2, {x: index * 10, y: 5, z: 0})
+        });
       }
       if (obj.name === 'front' || obj.name === 'top' || obj.name === 'right' || obj.name === 'angle' || obj.name === 'center') {
         self.changeCameraPos(obj.name)
