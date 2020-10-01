@@ -465,7 +465,7 @@ export default {
       var d = 20;
       light.receiveShadow = true;
       light.castShadow = true;
-      light.shadowCameraVisible = true;
+      // light.shadowCameraVisible = true;
 
       light.shadow.mapSize.width = 2048;
       light.shadow.mapSize.height = 2048;
@@ -1170,11 +1170,11 @@ export default {
       self.floor.rotation.x = -Math.PI / 2.0;
       
       self.floor.position.y = -1;
-      // self.floor.visible = false;
+      self.floor.visible = false;
       self.scene.add(self.floor);
 
       //Create a plane that receives shadows (but does not cast them)
-      // var planeGeometry = new THREE.PlaneBufferGeometry( 20, 20, 32, 32 );
+      // var planeGeometry = new THREE.PlaneBufferGeometry( 200, 200, 32, 32 );
       // var planeMaterial = new THREE.MeshStandardMaterial( { color: 0x00ff00 } )
       // var plane = new THREE.Mesh( planeGeometry, planeMaterial );
       // plane.receiveShadow = true;
