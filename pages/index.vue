@@ -333,8 +333,10 @@ export default {
       // floor
       var geometry = new THREE.PlaneGeometry(5000, 5000, 1, 1);
       //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
-      var material = new THREE.MeshLambertMaterial({
-        color: 0x151515
+      // var material = new THREE.MeshLambertMaterial({
+      var material = new THREE.MeshPhongMaterial({
+        color: 0x151515,
+        side: THREE.DoubleSide,
         // color: 0x050505
       });
       self.markerMaterial = new THREE.MeshLambertMaterial({
@@ -401,6 +403,9 @@ export default {
       // self.renderer.gammaInput = true;
       // self.renderer.gammaOutput = true;
       self.renderer.shadowMap.enabled = true;
+      this.renderer.shadowMapSoft = true
+      // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+      // this.renderer.physicallyCorrectLights = true
 
       if (shouldShowGuides) {
         self.addGuides()
@@ -450,30 +455,47 @@ export default {
     addSunLight() {
       var self = this
       // lights
+
+      // Spot light - start
+      // var coneRadius = 2.5
+      // var lightAngle = coneRadius / 12
+      // var spotLight = new THREE.SpotLight();
+      // spotLight.color = 0xffffff;
+      // spotLight.position.set( 0, 30, 0);
+      // spotLight.exponent = 30
+      // // spotLight.angle = lightAngle
+      // // spotLight.angle = 0 // Org: Math.PI/3
+      // spotLight.intensity = 5
+      // // Determine if shown or not on start
+      // // spotLight.visible = sceneSettings.checkbox[0].checked
+      // // Soften the edge of the light contact
+      // spotLight.penumbra = 0.52
+      // self.scene.add(spotLight);
+      // Spot light - end
+
       self.scene.add(new THREE.AmbientLight(0x666666));
       // var light = new THREE.DirectionalLight(0xffffff, 1.75);
       var light = new THREE.PointLight( 0xffa800, 1, 100 );
       light.intensity = 8;
-      var d = 20;
 
-      // light.position.set(d, d, d);
-      light.position.set(0, 0, 0); // light from top
-      // light.position.set(0, 0, 0); // light from center
+      var d = 14;
+      light.shadow.bias = 0.01;
+      light.shadow.camera.fov	= 45
+      light.shadow.camera.left = -d
+      light.shadow.camera.right	= d
+      light.shadow.camera.top	= d
+      light.shadow.camera.bottom = - d
+      
+      light.shadow.camera.near = 2 // 0.01
+      light.shadow.camera.far	= 50 // 150
 
-      light.castShadow = true;
-      light.shadowCameraVisible = true;
+      // light.shadowCameraVisible = true
 
-      light.shadow.mapSize.width = 2048;
-      light.shadow.mapSize.height = 2048;
+      // light.shadow.bias = 0.0
+      // light.shadowDarkness	= 0.5
 
-      light.shadow.camera.left = -d;
-      light.shadow.camera.right = d;
-      light.shadow.camera.top = d;
-      light.shadow.camera.bottom = -d;
-
-      // light.shadow.camera.far = 3 * d;
-      // light.shadow.camera.near = d;
-      // light.shadowDarkness = 0.5;
+      light.shadow.mapSize.width = 1024
+      light.shadow.mapSize.height	= 1024
 
       self.scene.add(light);
     },
@@ -1226,6 +1248,7 @@ export default {
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
         planetMesh.castShadow = true;
+        self.floor.receiveShadow = true;
         self.meshes.push(planetMesh)
         
         sounds[i].shape = planetMesh
