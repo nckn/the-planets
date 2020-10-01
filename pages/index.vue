@@ -66,6 +66,8 @@ import CANNON from 'cannon'
 
 import globalFunctions from '@/mixins/globalFunctions.js'
 
+// import planets from 'static/json/planets.json'
+
 // Gaze event
 // import GazeEvent from 'gaze-event'
 
@@ -73,13 +75,13 @@ import globalFunctions from '@/mixins/globalFunctions.js'
 // const path = 'snd/';
 const path = '';
 
-// const sounds = [
+// const planets = [
 //   'thud-mouth.mp3'
 // ]
 
 const roomTone = '';
 
-const sounds = [
+const planets = [
   {obj: null, isPlaying: false, audio: null, name: 'Sun', filename: 'snd/sun.mp3', type: 'sun', texture: 'textures/8k_sun.jpg', r: [10, 1]},
   {obj: null, isPlaying: false, audio: null, name: 'Mercury', filename: 'https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3', type: 'sphere', texture: 'textures/mercurymap.jpg', r: [1, 1.2]},
   {obj: null, isPlaying: false, audio: null, name: 'Venus', filename: 'https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3', type: 'sphere', texture: 'textures/venusmap.jpg', r: [1, 1.8]},
@@ -226,8 +228,8 @@ export default {
       INTERSECTED: '',
       intS: null,
       intersectedObject: null,
-      // array for sounds to play
-      // sounds: [],
+      // array for planets to play
+      // planets: [],
       isPlaying: false, // play state
       quickOptions: [
         {name: 'front', path: '/icons/icon-camera-front.svg'},
@@ -340,7 +342,7 @@ export default {
       // self.scene.add( mesh1 );
 
       // var soundTest1 = new THREE.PositionalAudio( self.listener );
-      // self.audioLoader.load( path + sounds[0], function ( buffer ) {
+      // self.audioLoader.load( path + planets[0], function ( buffer ) {
 
       //   soundTest1.setBuffer( buffer );
       //   soundTest1.setRefDistance( 20 );
@@ -357,7 +359,7 @@ export default {
       // self.scene.add( mesh2 );
 
       // var soundTest2 = new THREE.PositionalAudio( self.listener );
-      // self.audioLoader.load( path + sounds[3], function ( buffer ) {
+      // self.audioLoader.load( path + planets[3], function ( buffer ) {
 
       //   soundTest2.setBuffer( buffer );
       //   soundTest2.setRefDistance( 20 );
@@ -630,9 +632,9 @@ export default {
     startMusic(id) {
       var self = this
       console.log(id)
-      // console.log(sounds[id].isPlaying)
+      // console.log(planets[id].isPlaying)
       // self.isPlaying = !self.isPlaying
-      sounds.forEach((sound, index) => {
+      planets.forEach((sound, index) => {
         if (typeof id === 'number') {
           if (index === id) {
             sound.audio.play()
@@ -656,7 +658,7 @@ export default {
     },
     stopMusic(id) {
       var self = this
-      sounds.forEach((sound, index) => {
+      planets.forEach((sound, index) => {
         if (index === id) {
           sound.audio.stop()
           sound.isPlaying = !sound.isPlaying
@@ -703,7 +705,7 @@ export default {
       }
       // Scale
       if (obj.name === 'scale-actual') {
-        sounds.forEach((snd, index) => {
+        planets.forEach((snd, index) => {
           var s = snd.r[1]
           // self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
           self.tweenObject(snd.shape.position, 2, {x: index * 10, y: 5, z: 0})
@@ -821,7 +823,7 @@ export default {
           console.log(e.type)
           if (e.type === 'mousedown' || e.type === 'touchstart') {
             console.log(e.type)
-            if (sounds[self.currentId].isPlaying) {
+            if (planets[self.currentId].isPlaying) {
               self.stopMusic(self.currentId)
             }
             else {
@@ -1049,10 +1051,10 @@ export default {
 
       // Scaling
       // log sound analysis
-      sounds.forEach((element, index) => {
-        // element.shape.scale.y = sounds[0].obj.analyser.getFrequencyData()
+      planets.forEach((element, index) => {
+        // element.shape.scale.y = planets[0].obj.analyser.getFrequencyData()
         
-        var freq = sounds[index].analyser.getFrequencyData()[0]
+        var freq = planets[index].analyser.getFrequencyData()[0]
         var scaledVal = map(freq, 0, 256, 1, scaleVal)
         // element.shape.scale.set(scaledVal * 2, scaledVal * 2, scaledVal * 2)
         
@@ -1084,8 +1086,8 @@ export default {
         // self.bodies[index].shape.boundingSphereRadiusNeedsUpdate = true
         // self.bodies[index].shape.updateConvexPolyhedronRepresentation()
       });
-      // console.log('sound: ', sounds[0].obj.analyser.getFrequencyData().length)
-      // console.log('sound: ', sounds[0].shape) 
+      // console.log('sound: ', planets[0].obj.analyser.getFrequencyData().length)
+      // console.log('sound: ', planets[0].shape) 
       
       if (self.debug) {
         self.$refs.debug_text.innerHTML = 'rendering'
@@ -1137,7 +1139,7 @@ export default {
       vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
       vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
 
-      self.annotation.innerHTML = sounds[self.currentId].name;
+      self.annotation.innerHTML = planets[self.currentId].name;
       self.annotation.style.top = `${vector.y - 84}px`;
       self.annotation.style.left = `${vector.x}px`;
       // self.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
@@ -1185,10 +1187,10 @@ export default {
       var self = this 
       var mass = 5
       // var shape = new CANNON.Box(new CANNON.Vec3(bS, bS, bS))
-      self.noOFCubes = sounds.length
+      self.noOFCubes = planets.length
       for (var i = 0; i < self.noOFCubes; i++) {
         var shape;
-        if (sounds[i].type === 'sphere') {
+        if (planets[i].type === 'sphere') {
           shape = new CANNON.Sphere(bS)
         }
         else {
@@ -1196,13 +1198,13 @@ export default {
         }
 
         // Create texture
-        var texture = new THREE.TextureLoader().load( sounds[i].texture )
+        var texture = new THREE.TextureLoader().load( planets[i].texture )
 
         self.materialObject = new THREE.MeshStandardMaterial({
           color: 0x333333,
           roughness: 0,
           // metalness: 0,
-          emissive: sounds[i].type === 'sun' ? '#F8CE3B' : '#000000',
+          emissive: planets[i].type === 'sun' ? '#F8CE3B' : '#000000',
           // emissive: '#F8CE3B',
           // emissiveIntensity: 0.025,
           map: texture ? texture : '',
@@ -1210,7 +1212,7 @@ export default {
         })
 
         var rX, rY, rZ
-        if (sounds[i].type === 'sun') {
+        if (planets[i].type === 'sun') {
           rX = 0
           rY = 0
           rZ = 0
@@ -1245,7 +1247,7 @@ export default {
         // for some reason geometry is double of Cannon body
         var planetGeom = null;
         // Create sphere
-        planetGeom = new THREE.SphereBufferGeometry( sounds[i].r[0], reso, reso )
+        planetGeom = new THREE.SphereBufferGeometry( planets[i].r[0], reso, reso )
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
@@ -1253,10 +1255,10 @@ export default {
         // planetMesh.receiveShadow = true;
         self.meshes.push(planetMesh)
         
-        sounds[i].shape = planetMesh
+        planets[i].shape = planetMesh
         self.scene.add(planetMesh)
 
-        if (sounds[i].type === 'sun') {
+        if (planets[i].type === 'sun') {
           self.sun = planetMesh
           // planetMesh.visible = false
         }
@@ -1272,8 +1274,8 @@ export default {
         self.audioLoader[i] = new THREE.AudioLoader()
 
         var sound = new THREE.PositionalAudio( self.listener );
-        sounds[i].audio = sound
-        var sndPath = path + sounds[i].filename
+        planets[i].audio = sound
+        var sndPath = path + planets[i].filename
         
         // Load sound
         self.loadSound(sound, i, sndPath)
@@ -1282,15 +1284,15 @@ export default {
         
         // Load text
         if (shouldShowText) {
-          self.loadText(i, sounds[i].name, {x: rX, y: rY, z: rZ})
+          self.loadText(i, planets[i].name, {x: rX, y: rY, z: rZ})
         }
         
         // console.log('it is 2, ', sndPath)
 
         // if (i === 0) {
-        //   console.log('it is 2, ', path + sounds[i])
+        //   console.log('it is 2, ', path + planets[i])
         //   var snd = new THREE.PositionalAudio( self.listener );
-        //   self.audioLoader[i].load( path + sounds[0], function ( buffer ) {
+        //   self.audioLoader[i].load( path + planets[0], function ( buffer ) {
         //     snd.setBuffer( buffer );
         //     snd.setLoop( true );
         //     snd.setRefDistance( 20 );
@@ -1301,9 +1303,9 @@ export default {
         //   // boxBody.add( snd )
         //   cubeMesh.add( snd )
         // } else {
-        //   console.log('it is 2, ', path + sounds[i])
+        //   console.log('it is 2, ', path + planets[i])
         //   var sound2 = new THREE.PositionalAudio( self.listener );
-        //   self.audioLoader[i].load( path + sounds[1], function ( buffer ) {
+        //   self.audioLoader[i].load( path + planets[1], function ( buffer ) {
         //     sound2.setBuffer( buffer );
         //     sound2.setRefDistance( 20 );
         //     sound2.play();
@@ -1347,7 +1349,7 @@ export default {
         textMesh.position.z = pos.z
         // textMesh.position.x = 0
         textMesh.lookAt(self.camera.position)
-        sounds[i].text = textMesh
+        planets[i].text = textMesh
         self.scene.add(textMesh)
         // Iterate font inc load
         self.inc++
@@ -1367,10 +1369,10 @@ export default {
         sound.setRefDistance( 20 )
         sound.setLoop( true )
         // sound.play()
-        sounds[i].audio = sound
+        planets[i].audio = sound
         // console.log('its working alright')
       })
-      sounds[i].analyser = new THREE.AudioAnalyser( sound, 32 );
+      planets[i].analyser = new THREE.AudioAnalyser( sound, 32 );
       // console.log()
     },
     addMouseConstraint (x, y, z, body) {
@@ -1436,7 +1438,7 @@ export default {
           // console.log('x: ', self.camera.position.y)
           // console.log('z: ', self.camera.position.z)
           if (shouldShowText) {
-            sounds.forEach(element => {
+            planets.forEach(element => {
               element.text.lookAt(self.camera.position)
             });
           }
