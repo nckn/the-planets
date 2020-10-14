@@ -729,45 +729,48 @@ export default {
       }
       // Scale
       if (obj.name === 'scale-actual') {
-
-        // Lets start out by repos the camera
-        self.tweenObject(self.camera.position, 1, {x: 0, y: 0, z: stdCamDistance * 6})
-
-        self.actualSize = !self.actualSize
-        // acS = !acS
-        // console.log(acS)
-
-        var sum = 0;
-        self.planetList.forEach((snd, index) => {
-          var pre;
-          if (index === 0) {
-            pre = 0
-          }
-          else {
-            pre = self.planetList[index - 1].r[self.actualSize === true ? 0 : 1]
-          }
-
-          sum += pre
-
-          var s = snd.r[self.actualSize === true ? 0 : 1]
-          var nX = ((sum + index) * 10) + (s * 2) 
-          // var nX = (pre * 2) + (index * 50)
-          
-          // console.log(pre, snd.name)
-          // console.log('x: ', nX)
-
-          // var nY = s
-          var nY = self.planetList[index].r[self.actualSize === true ? 0 : 1]
-          
-          console.log('y is: ', nY)
-
-          self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
-          self.tweenObject(snd.shape.position, 2, {x: nX, y: nY, z: 0})
-        });
+        self.actualScaleOfObjects()
       }
       if (obj.name === 'front' || obj.name === 'top' || obj.name === 'right' || obj.name === 'angle' || obj.name === 'center') {
         self.changeCameraPos(obj.name)
       }
+    },
+    actualScaleOfObjects() {
+      var self = this
+      // Lets start out by repos the camera
+      self.tweenObject(self.camera.position, 1, {x: 0, y: 0, z: stdCamDistance * 6})
+
+      self.actualSize = !self.actualSize
+      // acS = !acS
+      // console.log(acS)
+
+      var sum = 0;
+      self.planetList.forEach((snd, index) => {
+        var pre;
+        if (index === 0) {
+          pre = 0
+        }
+        else {
+          pre = self.planetList[index - 1].r[self.actualSize === true ? 0 : 1]
+        }
+
+        sum += pre
+
+        var s = snd.r[self.actualSize === true ? 0 : 1]
+        var nX = ((sum + index) * 10) + (s * 2) 
+        // var nX = (pre * 2) + (index * 50)
+        
+        // console.log(pre, snd.name)
+        // console.log('x: ', nX)
+
+        // var nY = s
+        var nY = self.planetList[index].r[self.actualSize === true ? 0 : 1]
+        
+        console.log('y is: ', nY)
+
+        self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
+        self.tweenObject(snd.shape.position, 2, {x: nX, y: nY, z: 0})
+      });
     },
     tweenOver() {
       console.log('tween is over')
