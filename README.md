@@ -69,6 +69,7 @@ https://archive.org/details/Holst-ThePlanets/Marte.mp3
 Scale
 https://www.robertoziche.com/illustrations/
 
+
 // Make Betelgeuse. The sun is 121.9 times bigger than jupiter. 5 > 0.04 > 0.000031. r = 100
 // Make sun. The sun is 121.9 times bigger than jupiter. 5 > 0.04 > 0.000031. r = 5
 // Make Jupiter. Jupiter is 121.9 times bigger than jupiter. r = 0.04
@@ -86,9 +87,45 @@ https://www.robertoziche.com/illustrations/
 // Saturn: 58,232 km (36,184 mi)
 // Uranus: 25,362 km (15,759 mi)
 // Neptune: 24,622 km (15,299 mi)
+
 // Pluto: 1,188 km (738 mi) 
 
 
+
+
+- - - - - - - -
+Sun (r = 695700 km)
+1
+
+Mercury
+0.003507258875952 ≈ 0.0035
+
+Venus
+0.008699151933305 ≈ 0.0087
+
+Earth
+0.009157682909300 ≈ 0.0092
+
+Mars
+0.004872789995688 ≈ 0.0048
+
+Jupiter
+0.100490153801926 ≈ 0.1005
+
+Saturn
+0.083702745436251 ≈ 0.0837
+
+Uranus
+0.036455368693402 ≈ 0.0364
+
+Neptune
+0.035391691821187 ≈ 0.0354
+
+
+
+
+
+- - - - - - - -
 
 
 Other
