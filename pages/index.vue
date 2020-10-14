@@ -470,7 +470,7 @@ export default {
       // dirLight.castShadow = true;
       // dirLight.rotation.x = -Math.PI / 2.0;
       // self.scene.add(dirLight);
-      var sunOffsetY = 0
+      var sunOffsetY = 30
       var light = new THREE.PointLight( 0xffa800, 0, 100 );
       light.position.set( 0, sunOffsetY, 0);
       light.intensity = 5
