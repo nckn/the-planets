@@ -1,119 +1,101 @@
 [
   {
+    "name": "Sun",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Sun",
     "filename": "snd/sun.mp3",
     "type": "sun",
     "texture": "textures/8k_sun.jpg",
-    "r": [
-      10,
-      1
-    ]
+    "r": 1,
+    "s": [0.1]
   },
   {
+    "name": "Mercury",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Mercury",
     "filename": "https://ia600609.us.archive.org/19/items/Holst-ThePlanets/Mercurio.mp3",
     "type": "sphere",
     "texture": "textures/mercurymap.jpg",
-    "r": [
-      1,
-      1.2
-    ]
+    "r": 0.0035,
+    "s": [10]
   },
   {
+    "name": "Venus",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Venus",
     "filename": "https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Venus.mp3",
     "type": "sphere",
     "texture": "textures/venusmap.jpg",
-    "r": [
-      1,
-      1.8
-    ]
+    "r": 0.0087,
+    "s": [8]
   },
   {
+    "name": "Earth",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Earth",
     "filename": "snd/heartbeat.mp3",
     "type": "sphere",
     "texture": "textures/2_no_clouds_4k.jpg",
-    "r": [
-      1.2,
-      1.7
-    ]
+    "r": 0.0092,
+    "s": [8]
   },
   {
+    "name": "Mars",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Mars",
     "filename": "https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Marte.mp3",
     "type": "sphere",
     "texture": "textures/5672_mars_2k_color.jpg",
-    "r": [
-      0.8,
-      1
-    ]
+    "r": 0.0048,
+    "s": [8]
   },
   {
+    "name": "Jupiter",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Jupiter",
     "filename": "https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Jupiter.mp3",
     "type": "sphere",
     "texture": "textures/jupiter_globalmap2.jpg",
-    "r": [
-      5,
-      5.2
-    ]
+    "r": 0.1005,
+    "s": [0.3]
   },
   {
+    "name": "Saturn",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Saturn",
     "filename": "https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Saturno.mp3",
     "type": "sphere",
     "texture": "textures/saturnmap.jpg",
-    "r": [
-      4,
-      4.2
-    ]
+    "r": 0.0837,
+    "s": [0.5]
   },
   {
+    "name": "Uranus",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Uranus",
     "filename": "https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Urano.mp3",
     "type": "sphere",
     "texture": "textures/uranusmap.jpg",
-    "r": [
-      3.5,
-      3.7
-    ]
+    "r": 0.0364,
+    "s": [0.5]
   },
   {
+    "name": "Neptune",
     "obj": null,
     "isPlaying": false,
     "audio": null,
-    "name": "Neptune",
     "filename": "https://ia800609.us.archive.org/19/items/Holst-ThePlanets/Neptuno.mp3",
     "type": "sphere",
     "texture": "textures/neptunemap.jpg",
-    "r": [
-      3.5,
-      3.8
-    ]
+    "r": 0.0354,
+    "s": [0.5]
   }
 ]
