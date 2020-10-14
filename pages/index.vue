@@ -308,7 +308,7 @@ export default {
       // scene
       self.scene = new THREE.Scene();
       // self.scene.fog = new THREE.Fog(0x000000, 30, 180) // From SceneControls project
-      self.scene.fog = new THREE.Fog(0x000000, 1100, 1200);
+      self.scene.fog = new THREE.Fog(0x000000, 1750, 2000);
 
       // camera
       self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.5, 10000);
@@ -707,6 +707,10 @@ export default {
       }
       // Scale
       if (obj.name === 'scale-actual') {
+
+        // Lets start out by repos the camera
+        self.tweenObject(self.camera.position, 1, {x: 0, y: 0, z: stdCamDistance * 6})
+
         self.actualSize = !self.actualSize
         // acS = !acS
         // console.log(acS)
@@ -724,7 +728,7 @@ export default {
           sum += pre
 
           var s = snd.r[self.actualSize === true ? 0 : 1]
-          var nX = ((sum + index) * 15) + (s * 2) 
+          var nX = ((sum + index) * 10) + (s * 2) 
           // var nX = (pre * 2) + (index * 50)
           
           console.log(pre, snd.name)
@@ -1352,36 +1356,24 @@ export default {
     },
     getShader() {
       const ringVert = `
-        // GLSL Code (OpenGL Shading Language)
-        void main( ) {
-          // standard output position is gl_Position:
-          gl_Position = vec4( position, 1.0 ); // position: 3D from three.js, fourth comp. > 1.0 gives cutout
+        void main() {
+          gl_Position = vec4( position, 1.0 );
         }
       `;
       const ringFrag = `
-        #extension GL_OES_standard_derivatives : enable
-        uniform vec2  u_resolution; //  size of the painting area (canvas) in pixels (width, height)
-        //uniform vec2  u_mouse;    // mouse position over the painting area in pixels (X, Y)
-        //uniform float u_time;  	// time in seconds since start of screen layout
+        #extension GL_OES_standard_derivatives : enable  
+        uniform vec2  u_resolution;
+        uniform vec2  u_mouse;
+        uniform float u_time;
         
-        // function definition (circles)
-        float circ(float d, float x, float y){  
-          return d + sqrt( x * x + y * y );
+        float circ(float d, float x, float y){
+          return d + sqrt(x*x + y * y);
         }
-        
-        void main( ) {
-          // standard input of fragment coordinates: gl_FragCoord (predefined)
-          vec2 s = 2.0 * gl_FragCoord.xy / u_resolution.xy - 1.0;   // scaling of the axes:  -1 to +1
-          
-          // vec3 color = vec3(circ(0.1, s.x, s.y), circ(0.2, s.x, s.y), circ(0.0, s.x, s.y) - 0.1); // color circles
-          vec3 color = vec3(circ(-0.25, s.x, s.y), circ(-0.1, s.x, s.y),  circ( 0.6, s.x, s.y) - 0.15 ); // color circles	
-          
-          // color = clamp(color, 0.05, 0.85); // limitation of colors to a region  
-          color = clamp(color, 0.002, 0.99); // limitation of colors to a region
-          
-          // standard output fragment color: gl_FragColor (predefined) 
-          gl_FragColor = vec4(color, 1.0);	// parallel output - color with opacity: 1.0
-          
+        void main() {
+          vec2 s = 2.0 * gl_FragCoord.xy / u_resolution.xy - 1.0;
+          vec3 color = vec3(circ(0.1, s.x, s.y), circ(0.2, s.x, s.y), circ(0.0, s.x, s.y)-0.1);
+          color= clamp(color,	0.05,	0.85);
+          gl_FragColor = vec4(color, 1.0);
         }
       `;
       return { ringVert, ringFrag }
@@ -1392,26 +1384,30 @@ export default {
       var shaders = self.getShader()
       // uniform variables for shader integration
       var shaderUniforms = {
-        //u_time: 		{ type:  "f", value: 1.0},           // "f" float
-        u_resolution: { type: "v2", value: new THREE.Vector2() },		  
-        //u_mouse: 		{ type: "v2", value: new THREE.Vector2() }
+        u_time: { type: "f", value: 1.0 },
+        u_resolution: { type: "v2", value: new THREE.Vector2() },
+        u_mouse: { type: "v2", value: new THREE.Vector2() }
       };
       shaderUniforms.u_resolution.value.x = window.innerWidth;    // = renderer.domElement.width;   // give value to shader 
       shaderUniforms.u_resolution.value.y = window.innerHeight;   // = renderer.domElement.height;  // give value to shader
       var geometry = new THREE.RingGeometry( bS * 5.8, bS * 8.5, 64 );
-      var material = new THREE.MeshBasicMaterial( { color: 0x111111, side: THREE.DoubleSide, opacity: 0.5, transparent: true } );
-      // var material = new THREE.ShaderMaterial( {
-      //   uniforms: shaderUniforms,
-      //   vertexShader: shaders.ringVert,
-      //   fragmentShader: shaders.ringFrag
-      // } );
+      // var material = new THREE.MeshBasicMaterial( { color: 0x111111, side: THREE.DoubleSide, opacity: 0.5, transparent: true } );
+      var material = new THREE.ShaderMaterial( {
+        uniforms: shaderUniforms,
+        vertexShader: shaders.ringVert,
+        fragmentShader: shaders.ringFrag
+      } );
       // // Set transparency
       // material.uniforms.transparent = true;
       // material.uniforms.opacity.value = 0.3;
       // // Set transparency
-      var mesh = new THREE.Mesh( geometry, material );
-      mesh.rotation.x = Math.PI / 2;
-      plarent.add( mesh );
+      // var mesh = new THREE.Mesh( geometry, material );
+      // mesh.rotation.x = Math.PI / 2;
+      // plarent.add( mesh );
+
+      var plGeometry = new THREE.PlaneGeometry(2, 2);
+      var plane = new THREE.Mesh(plGeometry, material);
+      // self.scene.add(plane);
     },
     loadText(i, name, pos) {
       var self = this
