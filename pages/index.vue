@@ -643,19 +643,25 @@ export default {
             sound.isPlaying = !sound.isPlaying
             self.isPlaying = !self.isPlaying
           }
-        }
-        else {
-          if (sound.isPlaying) {
-            sound.audio.stop()
-            sound.isPlaying = false
-            self.isPlaying = false
-          }
-          else if (!sound.isPlaying) {
-            sound.audio.play()
-            sound.isPlaying = true
-            self.isPlaying = true
+          // Stop all the others
+          else {
+            if (sound.isPlaying) {
+              sound.audio.stop()
+            }
           }
         }
+        // else {
+        //   if (sound.isPlaying) {
+        //     sound.audio.stop()
+        //     sound.isPlaying = false
+        //     self.isPlaying = false
+        //   }
+        //   else if (!sound.isPlaying) {
+        //     sound.audio.play()
+        //     sound.isPlaying = true
+        //     self.isPlaying = true
+        //   }
+        // }
       });
     },
     stopMusic(id) {
