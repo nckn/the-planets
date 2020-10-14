@@ -74,7 +74,7 @@ https://www.robertoziche.com/illustrations/
 // Make Jupiter. Jupiter is 121.9 times bigger than jupiter. r = 0.04
 // Make Earth. r = 0.00328
 
-// Sun: approximately 695,700 km (432,300 mi)
+// Sun: approximately 695700 km (432,300 mi)
 
 // Planets (and moon)
 // Mercury: 2,440 km (1,516 mi)

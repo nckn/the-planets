@@ -278,7 +278,7 @@ export default {
     self.$nextTick(
       self.init(),
       // self.initCannon();
-      self.createBodies(),
+      self.createPlanets(),
       // Orbit controls
       self.setOrbitControls(),
       self.render()
@@ -308,7 +308,7 @@ export default {
       // scene
       self.scene = new THREE.Scene();
       // self.scene.fog = new THREE.Fog(0x000000, 30, 180) // From SceneControls project
-      // self.scene.fog = new THREE.Fog(0x000000, 50, 1500);
+      self.scene.fog = new THREE.Fog(0x000000, 1100, 1200);
 
       // camera
       self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.5, 10000);
@@ -1210,7 +1210,7 @@ export default {
       // self.scene.add( plane );
     },
     // This is where all cubes are being created
-    createBodies () {
+    createPlanets () {
       var self = this 
       var mass = 5
       // var shape = new CANNON.Box(new CANNON.Vec3(bS, bS, bS))
@@ -1285,6 +1285,12 @@ export default {
         self.meshes.push(planetMesh)
         
         self.planetList[i].shape = planetMesh
+
+        // Create disc
+        if (self.planetList[i].name === 'Saturn') {
+          self.applyRings(planetMesh)
+        }
+
         self.scene.add(planetMesh)
 
         if (self.planetList[i].type === 'sun') {
@@ -1343,6 +1349,66 @@ export default {
         //   cubeMesh.add( sound2 );
         // }
       }
+    },
+    getShader() {
+      const ringVert = `
+        precision mediump float;
+        attribute vec2 inPos;
+        varying vec2 vertPos;
+
+        void main() {
+          vertPos = inPos;
+          gl_Position = vec4( inPos.xy, 0.0, 1.0 );
+        }
+      `;
+      const ringFrag = `
+        precision mediump float;
+        varying vec2 vertPos;
+        uniform vec2 resolution;
+
+        void main() {
+          vec2 pos_ndc = 2.0 * gl_FragCoord.xy / resolution.xy - 1.0;
+          float dist = length(pos_ndc);
+          
+          vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
+          vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
+          vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
+          vec4 green = vec4(0.0, 1.0, 0.0, 1.0);
+          float step1 = 0.0;
+          float step2 = 0.33;
+          float step3 = 0.66;
+          float step4 = 1.0;
+
+          vec4 color = mix(white, red, smoothstep(step1, step2, dist));
+          color = mix(color, blue, smoothstep(step2, step3, dist));
+          color = mix(color, green, smoothstep(step3, step4, dist));
+
+          gl_FragColor = color;
+        }
+      `;
+      return { ringVert, ringFrag }
+    },
+    applyRings(plarent) {
+      var self = this
+      // console.log('bs: ', bS)
+      var shaders = self.getShader()
+      var geometry = new THREE.RingGeometry( bS * 5.8, bS * 8.5, 64 );
+      // var material = new THREE.MeshBasicMaterial( { color: 0x111111, side: THREE.DoubleSide, opacity: 0.5, transparent: true } );
+      var material = new THREE.ShaderMaterial( {
+        uniforms: {
+          time: { value: 1.0 },
+          resolution: { value: new THREE.Vector2() }
+        },
+        vertexShader: shaders.ringVert,
+        fragmentShader: shaders.ringFrag
+      } );
+      // // Set transparency
+      // material.uniforms.transparent = true;
+      // material.uniforms.opacity.value = 0.3;
+      // // Set transparency
+      var mesh = new THREE.Mesh( geometry, material );
+      mesh.rotation.x = Math.PI / 2;
+      plarent.add( mesh );
     },
     loadText(i, name, pos) {
       var self = this

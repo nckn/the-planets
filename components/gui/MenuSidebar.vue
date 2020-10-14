@@ -14,8 +14,8 @@
       .menu-option-group(v-for="(pm, index) in options" :name="pm.name" :key="`pm-${index}`" v-bind:class="`pie${index+1}`")
         .menu-option(v-for="(mtd, index) in pm.methods" :key="`mtd-${index}`" @click="commandClicked" :name="`${mtd.name}`" v-bind:class="[`${pm.name} ${mtd.name}`, {disabled: mtd.disabled}]" disabled="mtd.disabled")
     .menu-options-container.menu-info(v-else-if="type === 'info'" v-bind:class="{ isin: revealMenu }")
-      h1 The Silent Web
-      p.grey-it A time for peace and quiet.
+      h1 The planets
+      //- p.grey-it A time for peace and quiet.
       p.description.small-it Click, zoom, explore, pan and most of all – Listen. Disappear for a while.
 </template>
 
