@@ -100,6 +100,8 @@ const roomTone = '';
 //   // {obj: null, isPlaying: false, audio: null, name: 'Pluto', filename: 'snd/sitar1-motif-1.mp3', type: 'sphere'},
 // ]
 
+const buffer = 0.035;
+
 // Should we show the name in 3D text next to sound obj 
 const shouldShowText = false;
 const shouldShowGuides = false;
@@ -544,18 +546,18 @@ export default {
         var x, y, z;
         if (layout === 'random') { 
           x = map(self.randomIntFromInterval(0, 2), 0, 2, min, max)
-          y = self.planetList[i].r[0] // stdY
+          y = self.planetList[i].r[0] + buffer // stdY
           // y = map(self.randomIntFromInterval(0, 2), 0, 2, min, max)
           z = map(self.randomIntFromInterval(0, 2), 0, 2, min, max)
         }
         else if (layout === 'ring') {
           x = Math.sin( i / self.noOFCubes * Math.PI * 2 ) * ringSize
-          y = self.planetList[i].r[0] // stdY
+          y = self.planetList[i].r[0] + buffer // stdY
           z = Math.cos( i / self.noOFCubes * Math.PI * 2 ) * ringSize
         }
         else if (layout === 'small-ring') {
           x = Math.sin( i / self.noOFCubes * Math.PI * 2 ) * ringSize / 2.5
-          y = self.planetList[i].r[0] // stdY
+          y = self.planetList[i].r[0] + buffer // stdY
           z = Math.cos( i / self.noOFCubes * Math.PI * 2 ) * ringSize / 2.5
         }
         else if (layout === 'oort') {
@@ -1306,7 +1308,7 @@ export default {
 
         self.materialObject = new THREE.MeshStandardMaterial({
           color: 0x333333,
-          roughness: 0,
+          roughness: 1,
           // metalness: 0,
           emissive: planet.type === 'sun' ? '#F8CE3B' : '#000000',
           // emissive: '#F8CE3B',
