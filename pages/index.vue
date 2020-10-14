@@ -464,22 +464,24 @@ export default {
       // dirLight.rotation.x = -Math.PI / 2.0;
       // self.scene.add(dirLight);
       var sunOffsetY = 30
-      var light = new THREE.PointLight( 0xffd88c, 0, 100 ); // orange: ffa800
+      var light = new THREE.PointLight( 0xffd88c, 0, 60 ); // orange: ffa800
+      // var light = new THREE.SpotLight( 0xffd88c, 4 ); // orange: ffa800
       light.position.set( 0, sunOffsetY, 0);
       light.intensity = 5
       
       var d = 20;
       light.receiveShadow = true;
       light.castShadow = true;
+      light.shadow.bias = -0.0001;
       // light.shadowCameraVisible = true;
 
-      light.shadow.mapSize.width = 2048;
-      light.shadow.mapSize.height = 2048;
+      light.shadow.mapSize.width = 1024*4;
+      light.shadow.mapSize.height = 1024*4;
 
-      light.shadow.camera.left = -d;
-      light.shadow.camera.right = d;
-      light.shadow.camera.top = d;
-      light.shadow.camera.bottom = -d;
+      // light.shadow.camera.left = -d;
+      // light.shadow.camera.right = d;
+      // light.shadow.camera.top = d;
+      // light.shadow.camera.bottom = -d;
 
       self.scene.add(light);
     },
@@ -1182,7 +1184,7 @@ export default {
     createFloor() {
       var self = this 
       // floor
-      var geometry = new THREE.PlaneGeometry(5000, 5000, 100, 100);
+      var geometry = new THREE.PlaneGeometry(2500, 2500, 200, 200);
       //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
       var material = new THREE.MeshLambertMaterial({
       // var material = new THREE.MeshPhongMaterial({
@@ -1191,6 +1193,7 @@ export default {
         // side: THREE.DoubleSide,
         // color: 0x050505
       });
+      // material.map.anisotropy = 16;
       self.markerMaterial = new THREE.MeshLambertMaterial({
         color: 0xff0000
       });
@@ -1204,7 +1207,7 @@ export default {
       self.floor.rotation.x = -Math.PI / 2.0;
       
       // self.floor.position.y = -1;
-      self.floor.visible = false;
+      // self.floor.visible = false;
       self.scene.add(self.floor);
 
       //Create a plane that receives shadows (but does not cast them)
