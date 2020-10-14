@@ -1352,38 +1352,36 @@ export default {
     },
     getShader() {
       const ringVert = `
-        precision mediump float;
-        attribute vec2 inPos;
-        varying vec2 vertPos;
-
-        void main() {
-          vertPos = inPos;
-          gl_Position = vec4( inPos.xy, 0.0, 1.0 );
+        // GLSL Code (OpenGL Shading Language)
+        void main( ) {
+          // standard output position is gl_Position:
+          gl_Position = vec4( position, 1.0 ); // position: 3D from three.js, fourth comp. > 1.0 gives cutout
         }
       `;
       const ringFrag = `
-        precision mediump float;
-        varying vec2 vertPos;
-        uniform vec2 resolution;
-
-        void main() {
-          vec2 pos_ndc = 2.0 * gl_FragCoord.xy / resolution.xy - 1.0;
-          float dist = length(pos_ndc);
+        #extension GL_OES_standard_derivatives : enable
+        uniform vec2  u_resolution; //  size of the painting area (canvas) in pixels (width, height)
+        //uniform vec2  u_mouse;    // mouse position over the painting area in pixels (X, Y)
+        //uniform float u_time;  	// time in seconds since start of screen layout
+        
+        // function definition (circles)
+        float circ(float d, float x, float y){  
+          return d + sqrt( x * x + y * y );
+        }
+        
+        void main( ) {
+          // standard input of fragment coordinates: gl_FragCoord (predefined)
+          vec2 s = 2.0 * gl_FragCoord.xy / u_resolution.xy - 1.0;   // scaling of the axes:  -1 to +1
           
-          vec4 white = vec4(1.0, 1.0, 1.0, 1.0);
-          vec4 red = vec4(1.0, 0.0, 0.0, 1.0);
-          vec4 blue = vec4(0.0, 0.0, 1.0, 1.0);
-          vec4 green = vec4(0.0, 1.0, 0.0, 1.0);
-          float step1 = 0.0;
-          float step2 = 0.33;
-          float step3 = 0.66;
-          float step4 = 1.0;
-
-          vec4 color = mix(white, red, smoothstep(step1, step2, dist));
-          color = mix(color, blue, smoothstep(step2, step3, dist));
-          color = mix(color, green, smoothstep(step3, step4, dist));
-
-          gl_FragColor = color;
+          // vec3 color = vec3(circ(0.1, s.x, s.y), circ(0.2, s.x, s.y), circ(0.0, s.x, s.y) - 0.1); // color circles
+          vec3 color = vec3(circ(-0.25, s.x, s.y), circ(-0.1, s.x, s.y),  circ( 0.6, s.x, s.y) - 0.15 ); // color circles	
+          
+          // color = clamp(color, 0.05, 0.85); // limitation of colors to a region  
+          color = clamp(color, 0.002, 0.99); // limitation of colors to a region
+          
+          // standard output fragment color: gl_FragColor (predefined) 
+          gl_FragColor = vec4(color, 1.0);	// parallel output - color with opacity: 1.0
+          
         }
       `;
       return { ringVert, ringFrag }
@@ -1392,16 +1390,21 @@ export default {
       var self = this
       // console.log('bs: ', bS)
       var shaders = self.getShader()
+      // uniform variables for shader integration
+      var shaderUniforms = {
+        //u_time: 		{ type:  "f", value: 1.0},           // "f" float
+        u_resolution: { type: "v2", value: new THREE.Vector2() },		  
+        //u_mouse: 		{ type: "v2", value: new THREE.Vector2() }
+      };
+      shaderUniforms.u_resolution.value.x = window.innerWidth;    // = renderer.domElement.width;   // give value to shader 
+      shaderUniforms.u_resolution.value.y = window.innerHeight;   // = renderer.domElement.height;  // give value to shader
       var geometry = new THREE.RingGeometry( bS * 5.8, bS * 8.5, 64 );
-      // var material = new THREE.MeshBasicMaterial( { color: 0x111111, side: THREE.DoubleSide, opacity: 0.5, transparent: true } );
-      var material = new THREE.ShaderMaterial( {
-        uniforms: {
-          time: { value: 1.0 },
-          resolution: { value: new THREE.Vector2() }
-        },
-        vertexShader: shaders.ringVert,
-        fragmentShader: shaders.ringFrag
-      } );
+      var material = new THREE.MeshBasicMaterial( { color: 0x111111, side: THREE.DoubleSide, opacity: 0.5, transparent: true } );
+      // var material = new THREE.ShaderMaterial( {
+      //   uniforms: shaderUniforms,
+      //   vertexShader: shaders.ringVert,
+      //   fragmentShader: shaders.ringFrag
+      // } );
       // // Set transparency
       // material.uniforms.transparent = true;
       // material.uniforms.opacity.value = 0.3;
