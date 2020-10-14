@@ -115,13 +115,5 @@
       3.5,
       3.8
     ]
-  },
-  {
-    "obj": null,
-    "isPlaying": false,
-    "audio": null,
-    "name": "Pluto",
-    "filename": "snd/sitar1-motif-1.mp3",
-    "type": "sphere"
   }
 ]
