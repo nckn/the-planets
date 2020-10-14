@@ -6,8 +6,12 @@
     MenuSidebar(:style_name="'leftside'" :type="'info'" :options="guiControls" :closer="container")
     MenuSidebar(:style_name="'rightside'" :type="'hover'" :options="guiControls" :closer="container")
     //- QuickOptions(:type="'top-left'" :options="quickOptions")
-    .annotation(ref="annotation" v-if="showAnnotation")
-      p Cube
+    .dot(ref="dot" v-if="showAnnotation")
+      .annotation(ref="annotation")
+        .info-line
+        h3.title.bold-it.anim {{ currentObj.name }}
+        p.subtitle.anim {{ currentObj.desc }}
+        .seperator.vertical.anim
     .debug-overlay(v-if="debug")
       p.debug-text(ref="debug_text") test
     .play-button(@click="startMusic")
@@ -60,7 +64,7 @@ import MenuSidebar from '@/components/gui/MenuSidebar'
 
 import { map, generateRandomNumber } from '@/assets/js/helpers'
 
-import { TweenMax, Sine, Bounce, Expo } from 'gsap'
+import { TweenMax, TimelineMax, Sine, Power3, Power4, Expo } from 'gsap'
 
 import CANNON from 'cannon'
 
@@ -130,6 +134,9 @@ var way;
 var newPos;
 var perlinMap;
 var startPos = new THREE.Vector3(0, 0, 0);
+
+// Animation
+const stdTime = 1.25
 
 export default {
   name: 'SoundObjects',
@@ -260,6 +267,8 @@ export default {
       nMaterial: null,
       // Translation
       enableRotation: false,
+      // Tooltip
+      currentObj: {name: ''},
     }
   },
   created () {
@@ -306,6 +315,7 @@ export default {
       var self = this
       self.container = self.$refs.physics_cont // Asisgn container
       self.annotation = self.$refs.annotation // Annotation
+      self.dot = self.$refs.dot // Dot
       
       // console.log('perlinNoise')
       // console.log(noise)
@@ -419,6 +429,9 @@ export default {
 
       // Add lights
       self.addSunLight()
+
+      // Tooltip animation
+      self.initTooltipAnim()
 
       // self.initCannon();
       self.createPlanets();
@@ -870,9 +883,11 @@ export default {
           
           // Store the intersected id
           self.currentId = self.intS.userData.id
+          self.currentObj = self.planetList[self.currentId]
 
-          if (self.showAnnotation) {
-            self.annotation.classList.add('visible')
+          if (self.showAnnotation && self.intS.userData.id) {
+            self.dot.classList.add('visible')
+            self.playAnnotationAnim('forward')
           }
           // console.log('self.intS: ', self.intS.userData.id)
           
@@ -905,7 +920,9 @@ export default {
         // self.intersectedObject = null;
 
         if (self.showAnnotation) {
-          self.annotation.classList.remove('visible')
+          // alert('should remove')
+          self.dot.classList.remove('visible')
+          self.playAnnotationAnim('backward')
         }
         
         // Change cursor
@@ -928,6 +945,23 @@ export default {
       // else {
       //   self.annotation.classList.add('visible')
       // }
+    },
+    initTooltipAnim () {
+      var self = this
+      self.tlTooltip = new TimelineMax()
+        .to('.info-line', stdTime, {height: '100%', ease: Power3.easeInOut}, 'start')
+        .staggerFrom('.anim', stdTime, {y: 20, autoAlpha: 0, ease: Power4.easeInOut}, 0.1, `start+=${stdTime/2}`)
+        .pause()
+    },
+    playAnnotationAnim (kind) {
+      var self = this      
+      if (kind === 'forward') {
+        self.tlTooltip.play()
+      }
+      else if (kind === 'backward') {
+        self.tlTooltip.reverse()
+      }      
+      // .staggerTo(`#${self.content.id} .anim-selfaware`, 2, {autoAlpha: 1, ease: Sine.easeOut}, 0.25)
     },
     turnOffAgain () {
       var self = this
@@ -1196,10 +1230,19 @@ export default {
       vector.x = Math.round((0.5 + vector.x / 2) * (canvas.width / window.devicePixelRatio));
       vector.y = Math.round((0.5 - vector.y / 2) * (canvas.height / window.devicePixelRatio));
 
-      self.annotation.innerHTML = self.planetList[self.currentId].name;
-      self.annotation.style.top = `${vector.y - 84}px`;
-      self.annotation.style.left = `${vector.x}px`;
-      // self.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
+      if (self.showAnnotation) {
+        // self.annotation.innerHTML = sounds[self.currentId].name;
+        // Place little dot
+
+        var dotAttr = self.dot.getBoundingClientRect();
+
+        self.dot.style.top = `${vector.y - (dotAttr.height / 2)}px`;
+        self.dot.style.left = `${vector.x - (dotAttr.width / 2)}px`;
+        
+        // self.annotation.style.top = `${vector.y - 84}px`;
+        // self.annotation.style.left = `${vector.x}px`;
+        // self.annotation.style.opacity = spriteBehindObject ? 0.25 : 1;
+      }
     },
     map_range(value, low1, high1, low2, high2) {
       return low2 + (high2 - low2) * (value - low1) / (high1 - low1);
@@ -1725,45 +1768,79 @@ $breakp-xxl: 1600px;
 
 $annotate-w-lg: 200px;
 $color-annotate: rgba(10, 10, 10, 0.8);
+$dot-s: 12px;
 
 // Annotation
-.annotation {
-  width: $annotate-w-lg;
+.dot {
+  width: $dot-s;
+  height: $dot-s;
+  background: #f5f5f5;
   position: absolute;
-  top: 0;
-  margin-left: calc((#{$annotate-w-lg} / 2) * -1);
-  z-index: 1;
-  // margin-left: 15px;
-  // margin-top: 15px;
-  padding: 1em;
-  color: #fff;
-  background: $color-annotate;
-  // background: rgba(0, 0, 0, 0.8);
-  border-radius: 2px;
-  font-size: 12px;
-  line-height: 1.2;
-  transition: opacity, background .5s;
-  box-sizing: border-box;
-  text-align: center;
-  // opacity: 0;
-  &.visible {
-    // opacity: 1;
-    background: lighten($color-annotate, 4);
+  transition: opacity 1.5s ease;
+  border-radius: $dot-s / 2;
+  opacity: 0;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  .annotation {
+    width: $annotate-w-lg;
+    height: $annotate-w-lg;
+    position: absolute;
+    // top: 0;
+    top: -$annotate-w-lg;
+    // margin-left: calc((#{$annotate-w-lg} / 2) * -1);
+    z-index: 1;
+    // margin-left: 15px;
+    // margin-top: 15px;
+    padding: 0 1em 1em 1em;
+    color: #fff;
+    // background: $color-annotate;
+    // background: rgba(0, 0, 0, 0.8);
+    border-radius: 2px;
+    font-size: 12px;
+    line-height: 1.2;
+    box-sizing: border-box;
+    text-align: left;
+    // &::before {
+    //   content: '1';
+    //   position: absolute;
+    //   top: -30px;
+    //   left: -30px;
+    //   width: 30px;
+    //   height: 30px;
+    //   border: 2px solid #fff;
+    //   border-radius: 50%;
+    //   font-size: 16px;
+    //   line-height: 30px;
+    //   text-align: center;
+    //   background: rgba(0, 0, 0, 0.8);
+    // }
+    .title, .subtitle {
+      margin-left: 8px;
+    }
+    .title {
+      margin-top: -2px;
+    }
+    .subtitle {
+      //
+    }
+    .info-line {
+      position: absolute;
+      margin-left: -($dot-s / 2);
+      top: $annotate-w-lg;
+      width: 1px;
+      background: white;
+      // background: red;
+      height: 0;
+      transform-origin: top;
+      transform: rotate(180deg);
+    }
   }
-  // &::before {
-  //   content: '1';
-  //   position: absolute;
-  //   top: -30px;
-  //   left: -30px;
-  //   width: 30px;
-  //   height: 30px;
-  //   border: 2px solid #fff;
-  //   border-radius: 50%;
-  //   font-size: 16px;
-  //   line-height: 30px;
-  //   text-align: center;
-  //   background: rgba(0, 0, 0, 0.8);
-  // }
+}
+
+.visible {
+  opacity: 1;
+  transition: opacity 2.5s ease;
+  background: lighten($color-annotate, 4);
 }
 
 #number {
