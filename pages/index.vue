@@ -310,8 +310,8 @@ export default {
       // self.scene.fog = new THREE.Fog(0x000000, 30, 180) // From SceneControls project
       self.scene.fog = new THREE.Fog(0x000000, 1750, 2000);
 
-      // camera
-      self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.5, 10000);
+      // Create camera
+      self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 10000);
       // self.camera.position.set(30, 2, 5)
       self.tweenObject(self.camera.position, 1, {x: 0, y: stdCamDistance, z: 0})
       // self.camera.position.set(0, 2, 0)
@@ -471,7 +471,7 @@ export default {
       // dirLight.rotation.x = -Math.PI / 2.0;
       // self.scene.add(dirLight);
       var sunOffsetY = 30
-      var light = new THREE.PointLight( 0xffa800, 0, 100 );
+      var light = new THREE.PointLight( 0xffd88c, 0, 100 ); // orange: ffa800
       light.position.set( 0, sunOffsetY, 0);
       light.intensity = 5
       
@@ -737,12 +737,13 @@ export default {
           var nX = ((sum + index) * 10) + (s * 2) 
           // var nX = (pre * 2) + (index * 50)
           
-          console.log(pre, snd.name)
-          console.log('x: ', nX)
+          // console.log(pre, snd.name)
+          // console.log('x: ', nX)
 
-          var nY = s
+          // var nY = s
+          var nY = self.planetList[index].r[self.actualSize === true ? 0 : 1]
           
-          console.log('y: ', nY)
+          console.log('y is: ', nY)
 
           self.tweenObject(snd.shape.scale, 2, {x: s, y: s, z: s})
           self.tweenObject(snd.shape.position, 2, {x: nX, y: nY, z: 0})
@@ -1208,7 +1209,7 @@ export default {
       self.floor.receiveShadow = true;
       self.floor.rotation.x = -Math.PI / 2.0;
       
-      self.floor.position.y = -1;
+      // self.floor.position.y = -1;
       self.floor.visible = false;
       self.scene.add(self.floor);
 
@@ -1257,7 +1258,7 @@ export default {
         else {
           // Distribute in circle
           rX = Math.sin( i / (self.noOFCubes - 1) * Math.PI * 2 ) * ringSize
-          rY = 0
+          rY = self.planetList[i].r[0] // 0 if on same z height w/ sun
           rZ = Math.cos( i / (self.noOFCubes - 1) * Math.PI * 2 ) * ringSize
         }
 
