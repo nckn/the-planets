@@ -380,12 +380,13 @@ export default {
       self.container.appendChild(self.renderer.domElement);
 
       // self.renderer.gammaInput = true;
-      // self.renderer.gammaOutput = true;
+      self.renderer.gammaOutput = true;
       self.renderer.shadowMap.enabled = true;
       // this.renderer.shadowMapSoft = true
       self.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
       // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
-      // this.renderer.physicallyCorrectLights = true
+      self.renderer.physicallyCorrectLights = true
+      self.renderer.autoClear = false
 
       if (shouldShowGuides) {
         self.addGuides()
