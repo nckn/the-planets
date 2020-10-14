@@ -241,13 +241,6 @@ export default {
         {name: 'angle', path: '/icons/icon-camera-top.svg'},
         // {name: 'snap', path: '/svg/icons/icon-snap-on.svg'},
       ],
-      // Post-processing
-      params: {
-				exposure: 0.6, // org 1
-				bloomThreshold: 0.3,
-				bloomStrength: 1,
-				bloomRadius: 0
-      },
       // Passes
       filmPass: null,
       bloomPass: null,
@@ -522,7 +515,7 @@ export default {
         }
         else if (layout === 'ring') {
           x = Math.sin( i / self.noOFCubes * Math.PI * 2 ) * ringSize
-          y = stdY
+          y = self.planetList[i].r[0] // stdY
           z = Math.cos( i / self.noOFCubes * Math.PI * 2 ) * ringSize
         }
         else if (layout === 'small-ring') {
@@ -556,8 +549,9 @@ export default {
 
       // alert(obj.sliders[2].value)
 
+      // Post-processing
       var params = {
-				exposure: 1,
+				exposure: 0.8,
 				bloomStrength: 1,
 				// bloomStrength: parseFloat(obj.sliders[2].value),
 				bloomThreshold: 0,
@@ -614,8 +608,8 @@ export default {
       // self.composer.addPass(self.finalPass)
 
       self.filmPass = new FilmPass(
-        0.25,   // noise intensity
-        0.025,  // scanline intensity
+        0.0,   // noise intensity
+        0.0,  // scanline intensity
         648,    // scanline count
         false,  // grayscale
       );
@@ -1516,6 +1510,14 @@ export default {
       self.camera.updateProjectionMatrix()
       self.renderer.setSize( window.innerWidth, window.innerHeight )
     },
+    getDist(obj) {
+      var self = this
+      var x = self.camera.position.x;
+      var y = self.camera.position.y;
+      var z = self.camera.position.z; 
+      var distance = Math.sqrt((obj.x - x) * (obj.x - x) + (obj.y - y) * (obj.y - y) + (obj.z - z) * (obj.z - z));
+      return distance;
+    },
     setOrbitControls () {
       var self = this
       if (self.isWalking) {
@@ -1535,6 +1537,10 @@ export default {
         self.controls.enableDamping = true
         self.controls.zoomSpeed = 0.2
         self.controls.addEventListener('change', () => {
+          var dist = self.getDist({x: 0, y: 0, z: 0})
+          console.log('dist: ', dist)
+          self.scene.fog.near = dist
+          self.scene.fog.far = dist * 1.8
           // console.log('x: ', self.camera.position.x)
           // console.log('x: ', self.camera.position.y)
           // console.log('z: ', self.camera.position.z)
