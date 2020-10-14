@@ -509,7 +509,7 @@ export default {
         var x, y, z;
         if (layout === 'random') { 
           x = map(self.randomIntFromInterval(0, 2), 0, 2, min, max)
-          y = stdY
+          y = self.planetList[i].r[0] // stdY
           // y = map(self.randomIntFromInterval(0, 2), 0, 2, min, max)
           z = map(self.randomIntFromInterval(0, 2), 0, 2, min, max)
         }
@@ -519,9 +519,9 @@ export default {
           z = Math.cos( i / self.noOFCubes * Math.PI * 2 ) * ringSize
         }
         else if (layout === 'small-ring') {
-          x = Math.sin( i / self.noOFCubes * Math.PI * 2 ) * ringSize / 4
-          y = stdY
-          z = Math.cos( i / self.noOFCubes * Math.PI * 2 ) * ringSize / 4
+          x = Math.sin( i / self.noOFCubes * Math.PI * 2 ) * ringSize / 2.5
+          y = self.planetList[i].r[0] // stdY
+          z = Math.cos( i / self.noOFCubes * Math.PI * 2 ) * ringSize / 2.5
         }
         else if (layout === 'oort') {
           var l = self.bodies.length
