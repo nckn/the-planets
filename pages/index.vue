@@ -79,6 +79,41 @@ import planets from 'static/json/planets.json'
 // Gaze event
 // import GazeEvent from 'gaze-event'
 
+
+// ref for lumens: http://www.power-sure.com/lumens.htm
+var bulbLuminousPowers = {
+  "110000 lm (1000W)": 110000,
+  "3500 lm (300W)": 3500,
+  "1700 lm (100W)": 1700,
+  "800 lm (60W)": 800,
+  "400 lm (40W)": 400,
+  "180 lm (25W)": 180,
+  "20 lm (4W)": 20,
+  "Off": 0
+};
+
+// ref for solar irradiances: https://en.wikipedia.org/wiki/Lux
+var hemiLuminousIrradiances = {
+  "0.0001 lx (Moonless Night)": 0.0001,
+  "0.002 lx (Night Airglow)": 0.002,
+  "0.5 lx (Full Moon)": 0.5,
+  "3.4 lx (City Twilight)": 3.4,
+  "50 lx (Living Room)": 50,
+  "100 lx (Very Overcast)": 100,
+  "350 lx (Office Room)": 350,
+  "400 lx (Sunrise/Sunset)": 400,
+  "1000 lx (Overcast)": 1000,
+  "18000 lx (Daylight)": 18000,
+  "50000 lx (Direct Sun)": 50000
+};
+
+var lParams = {
+  shadows: true,
+  exposure: 0.68,
+  bulbPower: Object.keys( bulbLuminousPowers )[ 4 ],
+  hemiIrradiance: Object.keys( hemiLuminousIrradiances )[ 0 ]
+};
+
 // const path = 'audio/fxs/'
 // const path = 'snd/';
 const path = '';
@@ -445,7 +480,8 @@ export default {
       self.listenForKeyEvents()
 
       // Add lights
-      self.addSunLight()
+      // self.addSunLight()
+      self.addOtherLight()
 
       // Tooltip animation
       self.initTooltipAnim()
@@ -490,7 +526,12 @@ export default {
 
 			self.gui.add( self.params, 'bloomRadius', 0.0, 1.0 ).step( 0.01 ).onChange( function ( value ) {
 				self.bloomPass.radius = Number( value );
-			})
+      })
+      
+      self.gui.add( lParams, 'hemiIrradiance', Object.keys( hemiLuminousIrradiances ) );
+			self.gui.add( lParams, 'bulbPower', Object.keys( bulbLuminousPowers ) );
+			self.gui.add( lParams, 'exposure', 0, 1 );
+			self.gui.add( lParams, 'shadows' );
     },
     applyVR() {
       var self = this
@@ -504,6 +545,21 @@ export default {
       // console.log('vr button')
       // console.log(self.vrButton)
     },
+    addOtherLight() {
+      var self = this
+      var bulbGeometry = new THREE.SphereBufferGeometry( 0.02, 16, 8 );
+      self.bulbLight = new THREE.PointLight( 0xffee88, 1, 100, 2 );
+
+      self.bulbMat = new THREE.MeshStandardMaterial( {
+        emissive: 0xffffee,
+        emissiveIntensity: 1,
+        color: 0x000000
+      } );
+      self.bulbLight.add( new THREE.Mesh( bulbGeometry, self.bulbMat ) );
+      self.bulbLight.position.set( 0, 2, 0 );
+      self.bulbLight.castShadow = true;
+      self.scene.add( self.bulbLight );
+    },
     addSunLight() {
       var self = this
       // lights
@@ -512,20 +568,6 @@ export default {
       var hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, 1.6)
 
       var ambientLight = new THREE.AmbientLight(0xdc8874, .5);
-
-      // var shadowLight = new THREE.DirectionalLight(0xffffff, .9);
-      // shadowLight.position.set(150, 350, 350);
-      // shadowLight.castShadow = true;
-      // shadowLight.shadow.camera.left = -400;
-      // shadowLight.shadow.camera.right = 400;
-      // shadowLight.shadow.camera.top = 400;
-      // shadowLight.shadow.camera.bottom = -400;
-      // shadowLight.shadow.camera.near = 1;
-      // shadowLight.shadow.camera.far = 1000;
-      // shadowLight.shadow.mapSize.width = 4096;
-      // shadowLight.shadow.mapSize.height = 4096;
-
-      // var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
 
       // self.scene.add(shadowLight);
       self.scene.add(ambientLight);
@@ -1665,8 +1707,8 @@ export default {
         self.controls.addEventListener('change', () => {
           var dist = self.getDist({x: 0, y: 0, z: 0})
           // console.log('dist: ', dist)
-          self.scene.fog.near = dist
-          self.scene.fog.far = dist * 1.8
+          self.scene.fog.near = dist * 0.9
+          self.scene.fog.far = dist * 1.5
           // console.log('x: ', self.camera.position.x)
           // console.log('x: ', self.camera.position.y)
           // console.log('z: ', self.camera.position.z)
@@ -1711,7 +1753,7 @@ export default {
           event.preventDefault()
           switch ( key ) {
             case 77: // M
-              self.quickSearch['enabled'] = !self.quickSearch['enabled']
+              // self.quickSearch['enabled'] = !self.quickSearch['enabled']
               break
             case 67: // C
               self.toggleCamera()
