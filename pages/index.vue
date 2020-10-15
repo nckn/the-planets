@@ -481,9 +481,10 @@ export default {
       // Listen for keys
       self.listenForKeyEvents()
 
+      // TODO: See if addSunLight can work with PointLight
       // Add lights
       // self.addSunLight() // making everything more bright
-      self.addOtherLight()
+      self.addPointLight()
 
       // Tooltip animation
       self.initTooltipAnim()
@@ -547,8 +548,9 @@ export default {
       // console.log('vr button')
       // console.log(self.vrButton)
     },
-    addOtherLight() {
+    addPointLight() {
       var self = this
+      // Partly taken from https://threejs.org/examples/?q=light#webgl_lights_physical
       var bulbGeometry = new THREE.SphereBufferGeometry( 0.02, 16, 8 );
       self.bulbLight = new THREE.PointLight( 0xffee88, 3, 100, 2 );
 
