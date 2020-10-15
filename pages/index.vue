@@ -455,12 +455,13 @@ export default {
 
       // self.renderer.gammaInput = true;
       self.renderer.gammaOutput = true;
-      self.renderer.shadowMap.enabled = true;
       // this.renderer.shadowMapSoft = true
-      self.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-      // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
-      // self.renderer.physicallyCorrectLights = true
-      self.renderer.autoClear = false
+      // self.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+      self.renderer.physicallyCorrectLights = true
+      self.renderer.outputEncoding = THREE.sRGBEncoding;
+      self.renderer.shadowMap.enabled = true;
+      self.renderer.toneMapping = THREE.ReinhardToneMapping;
+      // self.renderer.autoClear = false
 
       if (shouldShowGuides) {
         self.addGuides()
@@ -1190,6 +1191,9 @@ export default {
       var self = this
       const delta = self.clock.getDelta()
       self.controls.update( delta )
+
+      // Update exposure
+      self.renderer.toneMappingExposure = Math.pow( lParams.exposure, 5.0 ); // to allow for very bright scenes.
       
       // This is physics - update start
       // self.updatePhysics()
@@ -1213,8 +1217,8 @@ export default {
       // self.nMaterial.uniforms[ 'weight' ].value = 10.0 * ( 0.5 + 0.5 * Math.sin( 0.00025 * ( Date.now() - self.start ) ) );
 
       // Post-processing
-      // self.renderer.render(self.scene, self.camera);
-      self.composer.render()
+      self.renderer.render(self.scene, self.camera);
+      // self.composer.render()
       // if (self.renderComposer) {
       //   if (vrEnabled) {
       //     self.renderer.render(self.scene, self.camera);
