@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container.outer.black-bg(ref="master_cont")
+  .container.outer.black-bg(ref="master_cont_smaller")
     #containerAO(ref="physics_cont")
     PageInfo(:name="'Sound Objects'")
     //- MenuOptions(:type="'top-left'" :options="guiControls" :closer="container")

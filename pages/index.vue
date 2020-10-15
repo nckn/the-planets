@@ -1,5 +1,5 @@
 <template lang="pug">
-  .container.outer.black-bg(ref="master_cont")
+  .container.outer.black-bg(ref="master_cont" v-bind:class="{ readyeddy: isReadyEddy }")
     #containerAO(ref="physics_cont")
     PageInfo(:name="'Sound Objects'")
     //- MenuOptions(:type="'top-left'" :options="guiControls" :closer="container")
@@ -112,7 +112,7 @@ const bS = 1;
 
 const reso = 32;
 
-const stdCamDistance = 200;
+const stdCamDistance = 60;
 
 const randomPos = false;
 const ringSize = 30;
@@ -152,6 +152,7 @@ export default {
   data () {
     return {
       debug: false,
+      isReadyEddy: false,
       showAnnotation: true,
       planetList: [],
       actualSize: false,
@@ -277,10 +278,15 @@ export default {
     var self = this
     setTimeout(() => {
       self.init()
-    }, 1000)
+      // console.log('happening')
+      self.isReadyEddy = true
+    }, 100)
   },
   mounted () {
     var self = this
+
+    // self.$refs.master_cont.classList.add('ready-eddy')
+
     // console.log('CANNON: ', CANNON)
     self.clock = new THREE.Clock()
     // Fonts
@@ -330,15 +336,15 @@ export default {
       // Create camera
       self.camera = new THREE.PerspectiveCamera(30, window.innerWidth / window.innerHeight, 0.01, 10000);
       // self.camera.position.set(30, 2, 5)
-      self.tweenObject(self.camera.position, 1, {x: 0, y: stdCamDistance, z: 0})
+      // self.tweenObject(self.camera.position, 1, {x: 0, y: stdCamDistance, z: 0})
       // self.camera.position.set(0, 2, 0)
-      // self.camera.position.set( 0, 2, 50 );
+      self.camera.position.set( stdCamDistance, stdCamDistance, stdCamDistance );
       
       // self.camera.rotation.order = 'YXZ';
       // self.camera.rotation.y = - Math.PI / 4;
       // self.camera.rotation.x = Math.atan( - 1 / Math.sqrt( 2 ) );
       // self.camera.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2);
-      self.camera.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2)
+      // self.camera.quaternion.setFromAxisAngle(new THREE.Vector3(0, 1, 0), Math.PI / 2)
 
       self.scene.add(self.camera);
 
@@ -1771,6 +1777,14 @@ $breakp-xxl: 1600px;
 $annotate-w-lg: 200px;
 $color-annotate: rgba(10, 10, 10, 0.8);
 $dot-s: 12px;
+
+.container.outer {
+  opacity: 0;
+  transition: opacity 1.5s ease-in-out;
+  &.readyeddy {
+    opacity: 1;
+  }
+}
 
 // Annotation
 .dot {
