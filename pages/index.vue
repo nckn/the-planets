@@ -122,6 +122,8 @@ const path = '';
 //   'thud-mouth.mp3'
 // ]
 
+const floorTexture = 'textures/floor-texture.jpg'
+
 const roomTone = '';
 
 // const planets = [
@@ -147,7 +149,7 @@ const vrEnabled = false;
 const scaleVal = 3;
 const bS = 1;
 
-const reso = 32;
+const geomReso = 48;
 
 const stdCamDistance = 60;
 
@@ -455,13 +457,12 @@ export default {
 
       // self.renderer.gammaInput = true;
       self.renderer.gammaOutput = true;
-      // this.renderer.shadowMapSoft = true
-      // self.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
-      self.renderer.physicallyCorrectLights = true
-      self.renderer.outputEncoding = THREE.sRGBEncoding;
       self.renderer.shadowMap.enabled = true;
-      self.renderer.toneMapping = THREE.ReinhardToneMapping;
-      // self.renderer.autoClear = false
+      // this.renderer.shadowMapSoft = true
+      self.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // default THREE.PCFShadowMap
+      // this.renderer.shadowMap.type = THREE.PCFSoftShadowMap
+      // self.renderer.physicallyCorrectLights = true
+      self.renderer.autoClear = false
 
       if (shouldShowGuides) {
         self.addGuides()
@@ -481,7 +482,7 @@ export default {
       self.listenForKeyEvents()
 
       // Add lights
-      // self.addSunLight()
+      self.addSunLight() // making everything more bright
       self.addOtherLight()
 
       // Tooltip animation
@@ -549,15 +550,15 @@ export default {
     addOtherLight() {
       var self = this
       var bulbGeometry = new THREE.SphereBufferGeometry( 0.02, 16, 8 );
-      self.bulbLight = new THREE.PointLight( 0xffee88, 1, 100, 2 );
+      self.bulbLight = new THREE.PointLight( 0xffee88, 3, 100, 2 );
 
-      self.bulbMat = new THREE.MeshStandardMaterial( {
-        emissive: 0xffffee,
-        emissiveIntensity: 1,
-        color: 0x000000
-      } );
-      self.bulbLight.add( new THREE.Mesh( bulbGeometry, self.bulbMat ) );
-      self.bulbLight.position.set( 0, 2, 0 );
+      // self.bulbMat = new THREE.MeshStandardMaterial( {
+      //   emissive: 0xffffee,
+      //   emissiveIntensity: 1,
+      //   color: 0x000000
+      // } );
+      // self.bulbLight.add( new THREE.Mesh( bulbGeometry, self.bulbMat ) );
+      self.bulbLight.position.set( 0, 10, 0 );
       self.bulbLight.castShadow = true;
       self.scene.add( self.bulbLight );
     },
@@ -1217,8 +1218,8 @@ export default {
       // self.nMaterial.uniforms[ 'weight' ].value = 10.0 * ( 0.5 + 0.5 * Math.sin( 0.00025 * ( Date.now() - self.start ) ) );
 
       // Post-processing
-      self.renderer.render(self.scene, self.camera);
-      // self.composer.render()
+      // self.renderer.render(self.scene, self.camera);
+      self.composer.render()
       // if (self.renderComposer) {
       //   if (vrEnabled) {
       //     self.renderer.render(self.scene, self.camera);
@@ -1349,19 +1350,22 @@ export default {
       var self = this 
       // floor
       var geometry = new THREE.PlaneGeometry(2500, 2500, 200, 200);
+
+      var fTexture = new THREE.TextureLoader().load( floorTexture )
       //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
       // var material = new THREE.MeshLambertMaterial({
       var material = new THREE.MeshPhongMaterial({
         // color: 0xffffff,
         color: 0x151515,
         roughness: 0.8,
+        map: fTexture
         // side: THREE.DoubleSide,
         // color: 0x050505
       });
       // material.map.anisotropy = 16;
-      self.markerMaterial = new THREE.MeshLambertMaterial({
-        color: 0xff0000
-      });
+      // self.markerMaterial = new THREE.MeshLambertMaterial({
+      //   color: 0xff0000
+      // });
       
       //THREE.ColorUtils.adjustHSV( material.color, 0, 0, 0.9 );
       self.floor = new THREE.Mesh(geometry, material);
@@ -1453,7 +1457,7 @@ export default {
         // Create sphere
         // console.log(planet.r[0])
         // return
-        planetGeom = new THREE.SphereBufferGeometry( planet.r[0], reso, reso )
+        planetGeom = new THREE.SphereBufferGeometry( planet.r[0], geomReso, geomReso )
  
         var planetMesh = new THREE.Mesh(planetGeom, self.materialObject);
         planetMesh.position.set(rX, rY, rZ)
