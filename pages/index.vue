@@ -24,6 +24,8 @@
 // https://codepen.io/eeonk/pen/pxyVrB
 
 import * as THREE from 'three'
+
+import { GUI } from 'three/examples/jsm/libs/dat.gui.module.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { FirstPersonControls } from 'three/examples/jsm/controls/FirstPersonControls.js'
 // import { VRButton } from 'three/examples/jsm/webxr/VRButton.js'
@@ -37,7 +39,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
 import { BloomPass } from 'three/examples/jsm/postprocessing/BloomPass.js';
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
-import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
+// import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
 // import { AfterimagePass } from 'three/examples/jsm/postprocessing/AfterimagePass.js';
 
 // Anti aliasing
@@ -272,6 +274,13 @@ export default {
       enableRotation: false,
       // Tooltip
       currentObj: {name: ''},
+      // Post-processing
+      params: {
+				exposure: 0.9,
+				bloomThreshold: 0.63,
+				bloomStrength: 0.6,
+				bloomRadius: 0.62
+      },
     }
   },
   created () {
@@ -448,6 +457,8 @@ export default {
       self.setOrbitControls()
       self.render()
 
+      self.addUglyGUI()
+
       window.addEventListener('touchmove', self.eventHappens, false);
       window.addEventListener('mousemove', self.eventHappens, false);
       
@@ -460,6 +471,26 @@ export default {
       window.addEventListener('touchend', self.onMouseUp, false);
 
       window.addEventListener( 'resize', self.onWindowResize, false );
+    },
+    addUglyGUI() {
+      var self = this
+      // GUI
+			self. gui = new GUI()
+			self.gui.add( self.params, 'exposure', 0.1, 2 ).onChange( function ( value ) {
+				self.renderer.toneMappingExposure = Math.pow( value, 4.0 );
+			})
+
+			self.gui.add( self.params, 'bloomThreshold', 0.0, 1.0 ).step( 0.01 ).onChange( function ( value ) {
+				self.bloomPass.threshold = Number( value );
+			})
+
+			self.gui.add( self.params, 'bloomStrength', 0.0, 3.0 ).onChange( function ( value ) {
+				self.bloomPass.strength = Number( value );
+			})
+
+			self.gui.add( self.params, 'bloomRadius', 0.0, 1.0 ).step( 0.01 ).onChange( function ( value ) {
+				self.bloomPass.radius = Number( value );
+			})
     },
     applyVR() {
       var self = this
@@ -476,6 +507,29 @@ export default {
     addSunLight() {
       var self = this
       // lights
+
+      // Hemispheric light
+      var hemisphereLight = new THREE.HemisphereLight(0xaaaaaa,0x000000, 1.6)
+
+      var ambientLight = new THREE.AmbientLight(0xdc8874, .5);
+
+      // var shadowLight = new THREE.DirectionalLight(0xffffff, .9);
+      // shadowLight.position.set(150, 350, 350);
+      // shadowLight.castShadow = true;
+      // shadowLight.shadow.camera.left = -400;
+      // shadowLight.shadow.camera.right = 400;
+      // shadowLight.shadow.camera.top = 400;
+      // shadowLight.shadow.camera.bottom = -400;
+      // shadowLight.shadow.camera.near = 1;
+      // shadowLight.shadow.camera.far = 1000;
+      // shadowLight.shadow.mapSize.width = 4096;
+      // shadowLight.shadow.mapSize.height = 4096;
+
+      // var ch = new THREE.CameraHelper(shadowLight.shadow.camera);
+
+      // self.scene.add(shadowLight);
+      self.scene.add(ambientLight);
+      self.scene.add( hemisphereLight )
 
       // Spot light - start
       // var coneRadius = 2.5
@@ -516,8 +570,8 @@ export default {
       light.shadow.bias = -0.0001;
       // light.shadowCameraVisible = true;
 
-      light.shadow.mapSize.width = 1024*4;
-      light.shadow.mapSize.height = 1024*4;
+      light.shadow.mapSize.width = 1024*2;
+      light.shadow.mapSize.height = 1024*2;
 
       // light.shadow.camera.left = -d;
       // light.shadow.camera.right = d;
@@ -589,24 +643,13 @@ export default {
       self.composer.addPass(new RenderPass(self.scene, self.camera))
 
       // var obj = self.getKeyByValue('FXsSliders', self.settings)
-
       // alert(obj.sliders[2].value)
-
-      // Post-processing
-      var params = {
-				exposure: 0.8,
-				bloomStrength: 1,
-				// bloomStrength: parseFloat(obj.sliders[2].value),
-				bloomThreshold: 0,
-				bloomRadius: 0,
-				scene: "Scene with Glow"
-			}
 
       // New Bloom Pass - start
       self.bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 );
-			self.bloomPass.threshold = params.bloomThreshold
-			self.bloomPass.strength = params.bloomStrength
-      self.bloomPass.radius = params.bloomRadius
+			self.bloomPass.threshold = self.params.bloomThreshold
+			self.bloomPass.strength = self.params.bloomStrength
+      self.bloomPass.radius = self.params.bloomRadius
       
       self.finalPass = new ShaderPass(
 				new THREE.ShaderMaterial( {
@@ -619,7 +662,8 @@ export default {
 					defines: {}
 				} ), 'baseTexture'
 			)
-			self.finalPass.needsSwap = true
+      // self.finalPass.needsSwap = true;
+      self.composer.addPass( self.bloomPass );
       // New Bloom Pass - end
 
       // Org Bloom Pass - start
@@ -647,17 +691,17 @@ export default {
       // Anti alias
       self.composer.addPass( self.fxaaPass )
       
-      self.composer.addPass(self.bloomPass)
+      // self.composer.addPass(self.bloomPass)
       // self.composer.addPass(self.finalPass)
 
-      self.filmPass = new FilmPass(
-        0.0,   // noise intensity
-        0.0,  // scanline intensity
-        648,    // scanline count
-        false,  // grayscale
-      );
-      self.filmPass.renderToScreen = true;
-      self.composer.addPass(self.filmPass);
+      // self.filmPass = new FilmPass(
+      //   0.0,   // noise intensity
+      //   0.0,  // scanline intensity
+      //   648,    // scanline count
+      //   false,  // grayscale
+      // );
+      // self.filmPass.renderToScreen = true;
+      // self.composer.addPass(self.filmPass);
 
       // self.afterimagePass = new AfterimagePass();
       // self.composer.addPass( self.afterimagePass )
