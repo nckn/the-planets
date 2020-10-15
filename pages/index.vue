@@ -314,8 +314,8 @@ export default {
       // Post-processing
       params: {
 				exposure: 0.9,
-				bloomThreshold: 0.63,
-				bloomStrength: 0.6,
+				bloomThreshold: 0, // 0.63
+				bloomStrength: 1.33, // 0.6
 				bloomRadius: 0.62
       },
     }
@@ -482,7 +482,7 @@ export default {
       self.listenForKeyEvents()
 
       // Add lights
-      self.addSunLight() // making everything more bright
+      // self.addSunLight() // making everything more bright
       self.addOtherLight()
 
       // Tooltip animation
