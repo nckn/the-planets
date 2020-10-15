@@ -1260,10 +1260,11 @@ export default {
       // floor
       var geometry = new THREE.PlaneGeometry(2500, 2500, 200, 200);
       //geometry.applyMatrix( new THREE.Matrix4().makeRotationX( -Math.PI / 2 ) );
-      var material = new THREE.MeshLambertMaterial({
-      // var material = new THREE.MeshPhongMaterial({
+      // var material = new THREE.MeshLambertMaterial({
+      var material = new THREE.MeshPhongMaterial({
         // color: 0xffffff,
         color: 0x151515,
+        roughness: 0.8,
         // side: THREE.DoubleSide,
         // color: 0x050505
       });
