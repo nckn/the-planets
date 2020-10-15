@@ -508,7 +508,7 @@ export default {
       var light = new THREE.PointLight( 0xffd88c, 0, 60 ); // orange: ffa800
       // var light = new THREE.SpotLight( 0xffd88c, 4 ); // orange: ffa800
       light.position.set( 0, sunOffsetY, 0);
-      light.intensity = 5
+      light.intensity = 1.5
       
       var d = 20;
       light.receiveShadow = true;
